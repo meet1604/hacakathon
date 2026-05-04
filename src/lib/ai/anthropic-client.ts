@@ -9,7 +9,7 @@ import { TRIAGE_SYSTEM_PROMPT } from "./prompts/triage-system";
 import { extractJSON } from "./extract-json";
 import { logger } from "@/lib/utils/logger";
 
-const MAX_TOKENS = 600;
+const MAX_TOKENS = 700;
 const TIMEOUT_MS = 45_000;
 const MAX_RETRIES = 1;
 
