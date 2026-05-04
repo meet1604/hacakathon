@@ -120,6 +120,7 @@ async function callOpenRouter(
       model: OPENROUTER_MODEL,
       max_tokens: MAX_TOKENS,
       temperature: 0.1,
+      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.map((m) => ({ role: m.role, content: m.content })),
@@ -136,6 +137,9 @@ async function callOpenRouter(
       const err = new Error("rate_limited");
       (err as NodeJS.ErrnoException).code = "RATE_LIMITED";
       throw err;
+    }
+    if (status === 401 || status === 403) {
+      throw new Error("OPENROUTER_API_KEY is invalid or missing");
     }
     throw new Error(`OpenRouter error: ${status}${body ? ` ${body}` : ""}`);
   }
@@ -224,6 +228,7 @@ async function callGroq(
       model: GROQ_MODEL,
       max_tokens: MAX_TOKENS,
       temperature: 0.1,
+      response_format: { type: "json_object" }, // forces pure JSON — no markdown wrapping
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.map((m) => ({ role: m.role, content: m.content })),
@@ -240,6 +245,9 @@ async function callGroq(
       const err = new Error("rate_limited");
       (err as NodeJS.ErrnoException).code = "RATE_LIMITED";
       throw err;
+    }
+    if (status === 401 || status === 403) {
+      throw new Error("GROQ_API_KEY is invalid or missing");
     }
     throw new Error(`Groq error: ${status}${body ? ` ${body}` : ""}`);
   }
@@ -381,10 +389,15 @@ export async function analyzeSymptoms(
           },
         };
       }
-      if (err instanceof Anthropic.APIError && err.status === 401) {
+      // Auth errors — never retry, key is wrong
+      const msg = (err as Error).message ?? "";
+      if (
+        (err instanceof Anthropic.APIError && err.status === 401) ||
+        msg.includes("API_KEY is invalid") || msg.includes("API_KEY missing")
+      ) {
         return {
           ok: false,
-          error: { code: "AUTH_ERROR", message: "Service unavailable" },
+          error: { code: "AUTH_ERROR", message: "AI service key is not configured. Please contact support." },
         };
       }
       if (attempt >= MAX_RETRIES) {
