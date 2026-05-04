@@ -1,0 +1,310 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-instrument-serif);
+
+  /* Brand / primary — Healing Sage */
+  --color-primary:       #2D5F4F;
+  --color-primary-dark:  #1E4237;
+  --color-primary-mid:   #3A7A66;
+  --color-primary-fg:    #FFFFFF;
+
+  /* Backgrounds */
+  --color-bg:            #F5F1EA;
+  --color-bg-tint:       #EDE8DF;
+  --color-surface:       #FFFFFF;
+  --color-border:        #E8E2D5;
+  --color-border-strong: #D5CEC2;
+
+  /* Accent */
+  --color-accent:        #D4A574;
+  --color-accent-light:  #F0DFC7;
+
+  /* Text */
+  --color-text-1:        #1A2421;
+  --color-text-2:        #5C6660;
+  --color-text-3:        #9CA8A3;
+
+  /* Severity */
+  --color-selfcare:      #6B8E6F;
+  --color-selfcare-bg:   #E8F3E9;
+  --color-caution:       #C68B3C;
+  --color-caution-bg:    #FBF0DE;
+  --color-emergency:     #B23A3A;
+  --color-emergency-bg:  #FBEAEA;
+
+  /* Legacy aliases for shadcn components */
+  --color-background:        var(--background);
+  --color-foreground:        var(--foreground);
+  --color-card:              var(--card);
+  --color-card-foreground:   var(--card-foreground);
+  --color-popover:           var(--popover);
+  --color-popover-foreground:var(--popover-foreground);
+  --color-muted:             var(--muted);
+  --color-muted-foreground:  var(--muted-foreground);
+  --color-destructive:       var(--destructive);
+  --color-input:             var(--input);
+  --color-ring:              var(--ring);
+  --color-secondary:         var(--secondary);
+  --color-secondary-foreground:var(--secondary-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(26,36,33,.05), 0 4px 12px rgba(26,36,33,.04);
+  --shadow-md: 0 1px 2px rgba(26,36,33,.06), 0 8px 24px rgba(26,36,33,.07);
+  --shadow-lg: 0 1px 3px rgba(26,36,33,.08), 0 16px 48px rgba(26,36,33,.10);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* shadcn radius compatibility */
+  --radius: 0.75rem;
+}
+
+/* ── CSS CUSTOM PROPERTIES ─────────────────────────────────────── */
+:root {
+  --background:              #F5F1EA;
+  --foreground:              #1A2421;
+  --card:                    #FFFFFF;
+  --card-foreground:         #1A2421;
+  --popover:                 #FFFFFF;
+  --popover-foreground:      #1A2421;
+  --primary:                 #2D5F4F;
+  --primary-foreground:      #FFFFFF;
+  --secondary:               #EDE8DF;
+  --secondary-foreground:    #1A2421;
+  --muted:                   #EDE8DF;
+  --muted-foreground:        #5C6660;
+  --accent:                  #F0DFC7;
+  --accent-foreground:       #1A2421;
+  --destructive:             #B23A3A;
+  --destructive-foreground:  #FFFFFF;
+  --border:                  #E8E2D5;
+  --input:                   #E8E2D5;
+  --ring:                    #2D5F4F;
+}
+
+.dark {
+  --background:              #1A1614;
+  --foreground:              #F0EBE3;
+  --card:                    #2A2421;
+  --card-foreground:         #F0EBE3;
+  --popover:                 #2A2421;
+  --popover-foreground:      #F0EBE3;
+  --primary:                 #3A7A66;
+  --primary-foreground:      #FFFFFF;
+  --secondary:               #3D3530;
+  --secondary-foreground:    #F0EBE3;
+  --muted:                   #3D3530;
+  --muted-foreground:        #9E958E;
+  --accent:                  #3D2E1C;
+  --accent-foreground:       #F0EBE3;
+  --destructive:             #B23A3A;
+  --destructive-foreground:  #FFFFFF;
+  --border:                  #3D3530;
+  --input:                   #52463E;
+  --ring:                    #3A7A66;
+}
+
+/* ── BASE STYLES ────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-instrument-serif), Georgia, serif;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+  *:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── ANIMATIONS ─────────────────────────────────────────────────── */
+@keyframes dot-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-expand {
+  0%   { opacity: .5; transform: scale(.8); }
+  100% { opacity: 0;  transform: scale(1.3); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes pulse-emergency {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(178,58,58,.5); }
+  50%       { box-shadow: 0 0 0 16px rgba(178,58,58,0); }
+}
+
+.animate-slide-up     { animation: slide-up .25s ease-out; }
+.animate-dot-bounce   { animation: dot-bounce .9s ease-in-out infinite; }
+.animate-pulse-expand { animation: pulse-expand 2s ease-out infinite; }
+.animate-spin         { animation: spin 1s linear infinite; }
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--border) 25%, var(--border-strong, #D5CEC2) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+.animate-pulse-emergency { animation: pulse-emergency 2s ease-in-out infinite; }
+
+/* ── PHONE MOCKUP ANIMATIONS ─────────────────────────────────────── */
+@keyframes mockup-sequence {
+  /* 0–20%: user bubble visible */
+  0%   { opacity: 0; transform: translateY(8px); }
+  5%   { opacity: 1; transform: translateY(0); }
+  20%  { opacity: 1; transform: translateY(0); }
+  25%  { opacity: 0; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+@keyframes mockup-dots-seq {
+  0%   { opacity: 0; }
+  25%  { opacity: 0; }
+  30%  { opacity: 1; }
+  45%  { opacity: 1; }
+  50%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes mockup-badge-seq {
+  0%   { opacity: 0; transform: translateY(8px); }
+  50%  { opacity: 0; transform: translateY(8px); }
+  55%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  95%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes mockup-call-seq {
+  0%   { opacity: 0; transform: translateY(6px); }
+  62%  { opacity: 0; transform: translateY(6px); }
+  67%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  95%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes mockup-dot-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-3px); }
+}
+
+.mockup-bubble-user {
+  animation: mockup-sequence 6s ease-in-out infinite;
+}
+.mockup-bubble-dots {
+  animation: mockup-dots-seq 6s ease-in-out infinite;
+}
+.mockup-emergency-badge {
+  animation: mockup-badge-seq 6s ease-in-out infinite;
+}
+.mockup-call-btn {
+  animation: mockup-call-seq 6s ease-in-out infinite;
+}
+.mockup-dot {
+  animation: mockup-dot-bounce 0.9s ease-in-out infinite;
+}
+
+/* ── DESKTOP MOCKUP ANIMATIONS ──────────────────────────────────── */
+@keyframes dsk-msg1-kf {
+  0%   { opacity: 0; transform: translateX(8px); }
+  8%   { opacity: 1; transform: translateX(0); }
+  38%  { opacity: 1; transform: translateX(0); }
+  46%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes dsk-typing-kf {
+  0%, 43%  { opacity: 0; }
+  50%  { opacity: 1; }
+  62%  { opacity: 1; }
+  70%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes dsk-result-kf {
+  0%, 67%  { opacity: 0; transform: translateY(6px); }
+  75%  { opacity: 1; transform: translateY(0); }
+  95%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.dsk-msg1   { animation: dsk-msg1-kf   9s ease-in-out infinite; }
+.dsk-typing { animation: dsk-typing-kf 9s ease-in-out infinite; }
+.dsk-result { animation: dsk-result-kf 9s ease-in-out infinite; }
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+
+/* ── PRINT STYLES ────────────────────────────────────────────────── */
+@media print {
+  /* Hide all navigation chrome */
+  aside,
+  header,
+  nav,
+  [data-print-hide],
+  .mobile-tab-bar {
+    display: none !important;
+  }
+
+  /* Expand main content to fill page */
+  body {
+    background: #fff !important;
+  }
+  main {
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  .flex-1.overflow-y-auto {
+    overflow: visible !important;
+  }
+
+  /* Sidebar buttons + action buttons — hide */
+  button:not([data-print-show]) {
+    display: none !important;
+  }
+
+  /* Make cards print-friendly */
+  .shadow-sm,
+  .shadow-md {
+    box-shadow: none !important;
+  }
+
+  @page {
+    margin: 20mm 15mm;
+  }
+}

@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MediTriage — Desktop · 1440px</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+/* ── TOKENS ───────────────────────────────────────────────────────────── */
+:root {
+  --bg:           #F5F1EA;
+  --bg-tint:      #EDE8DF;
+  --surface:      #FFFFFF;
+  --border:       #E8E2D5;
+  --border-mid:   #D5CEC2;
+  --primary:      #2D5F4F;
+  --primary-dk:   #1E4237;
+  --primary-lt:   #3A7A66;
+  --primary-tint: #EBF3F0;
+  --accent:       #D4A574;
+  --accent-lt:    #F0DFC7;
+  --text-1:       #1A2421;
+  --text-2:       #5C6660;
+  --text-3:       #9CA8A3;
+  --selfcare:     #6B8E6F;
+  --selfcare-bg:  #E8F3E9;
+  --caution:      #C68B3C;
+  --caution-bg:   #FBF0DE;
+  --danger:       #B23A3A;
+  --danger-bg:    #FBEAEA;
+  --info:         #3160B5;
+  --info-bg:      #EBF0FB;
+  --sidebar-w:    248px;
+  --header-h:     60px;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 24px;
+  --sh-sm:  0 1px 2px rgba(26,36,33,.04), 0 2px 8px rgba(26,36,33,.05);
+  --sh-md:  0 1px 3px rgba(26,36,33,.06), 0 6px 20px rgba(26,36,33,.07);
+  --sh-lg:  0 2px 4px rgba(26,36,33,.07), 0 12px 40px rgba(26,36,33,.09);
+  --sh-xl:  0 4px 8px rgba(26,36,33,.08), 0 24px 64px rgba(26,36,33,.12);
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans:  'Inter', system-ui, sans-serif;
+}
+
+/* ── RESET ────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-1);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; }
+a { text-decoration: none; }
+*:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+
+/* ── APP SHELL ────────────────────────────────────────────────────────── */
+.app-shell { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow-y: auto;
+  z-index: 20;
+}
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 18px 20px; border-bottom: 1px solid var(--border);
+  height: var(--header-h);
+}
+.logo-mark {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--primary); color: #fff;
+  font-family: var(--font-serif); font-size: 16px; font-weight: 400;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.brand-name { font-size: 15px; font-weight: 600; color: var(--text-1); letter-spacing: -.3px; }
+.brand-badge {
+  margin-left: auto; font-size: 10px; font-weight: 600; letter-spacing: .04em;
+  background: var(--primary-tint); color: var(--primary);
+  padding: 2px 7px; border-radius: 99px;
+}
+
+.sidebar-section { padding: 20px 12px 8px; flex: 1; }
+.sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); padding: 0 8px; margin-bottom: 4px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: var(--r-md);
+  font-size: 14px; font-weight: 500; color: var(--text-2);
+  border: none; background: none; width: 100%; text-align: left;
+  transition: all .12s; margin-bottom: 1px; position: relative;
+}
+.nav-item:hover { background: var(--bg); color: var(--text-1); }
+.nav-item.active { background: var(--primary-tint); color: var(--primary); }
+.nav-item .nav-badge {
+  margin-left: auto; font-size: 11px; font-weight: 600;
+  background: var(--danger); color: #fff;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-item svg { flex-shrink: 0; }
+
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
+.sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
+.user-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: var(--r-md);
+  cursor: pointer; transition: background .12s;
+}
+.user-row:hover { background: var(--bg); }
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-lt) 100%);
+  color: #fff; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 500; color: var(--text-1); }
+.user-role { font-size: 11px; color: var(--text-3); }
+
+/* ── MAIN AREA ────────────────────────────────────────────────────────── */
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* ── TOP HEADER ──────────────────────────────────────────────────────── */
+.top-header {
+  height: var(--header-h); display: flex; align-items: center;
+  padding: 0 32px; background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; gap: 16px; z-index: 10;
+}
+.page-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.header-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+.header-breadcrumb span { color: var(--text-3); }
+.header-spacer { flex: 1; }
+.header-search {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 14px; height: 36px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 99px; color: var(--text-3); font-size: 13px;
+  cursor: text; transition: all .15s; width: 220px;
+}
+.header-search:hover { border-color: var(--border-mid); }
+.header-btn {
+  width: 36px; height: 36px; border-radius: 99px;
+  border: 1px solid var(--border); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2); cursor: pointer; transition: all .12s;
+  position: relative;
+}
+.header-btn:hover { border-color: var(--border-mid); color: var(--text-1); }
+.notif-dot {
+  position: absolute; top: 7px; right: 7px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--danger); border: 1.5px solid var(--surface);
+}
+.header-avatar { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-lt) 100%); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+
+/* ── PAGE BODY ────────────────────────────────────────────────────────── */
+.page-body { flex: 1; overflow-y: auto; padding: 32px; background: var(--bg); }
+.page-body.no-pad { padding: 0; }
+
+/* ── SHARED COMPONENTS ────────────────────────────────────────────────── */
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px; border: none; cursor: pointer; border-radius: var(--r-md);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+  transition: all .12s; white-space: nowrap; padding: 0 16px; height: 36px;
+}
+.btn-primary { background: var(--primary); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+.btn-primary:hover { background: var(--primary-dk); box-shadow: var(--sh-sm); transform: translateY(-1px); }
+.btn-secondary { background: var(--surface); color: var(--text-1); border: 1px solid var(--border); box-shadow: var(--sh-sm); }
+.btn-secondary:hover { border-color: var(--border-mid); background: var(--bg); }
+.btn-ghost { background: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--bg-tint); color: var(--text-1); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #8F2E2E; }
+.btn-accent { background: var(--accent); color: var(--text-1); font-weight: 600; }
+.btn-accent:hover { background: #C4935F; }
+.btn-lg { height: 44px; font-size: 15px; padding: 0 24px; border-radius: var(--r-lg); }
+.btn-sm { height: 30px; font-size: 12px; padding: 0 12px; border-radius: var(--r-sm); }
+.btn-icon { width: 36px; height: 36px; padding: 0; }
+.btn-full { width: 100%; }
+.btn:disabled { opacity: .45; pointer-events: none; }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
+.card-p { padding: 24px; }
+.card-header { padding: 20px 24px 0; }
+.card-body { padding: 20px 24px; }
+.card-footer { padding: 0 24px 20px; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px; }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+.badge-green  { background: var(--selfcare-bg); color: var(--selfcare); }
+.badge-green  .badge-dot { background: var(--selfcare); }
+.badge-amber  { background: var(--caution-bg); color: var(--caution); }
+.badge-amber  .badge-dot { background: var(--caution); }
+.badge-red    { background: var(--danger-bg); color: var(--danger); }
+.badge-red    .badge-dot { background: var(--danger); }
+.badge-blue   { background: var(--info-bg); color: var(--info); }
+.badge-blue   .badge-dot { background: var(--info); }
+.badge-gray   { background: var(--bg-tint); color: var(--text-2); }
+
+/* Inputs */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; font-weight: 500; color: var(--text-1); }
+.field-hint { font-size: 12px; color: var(--text-3); }
+.input {
+  height: 38px; padding: 0 12px;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-md); font-size: 14px; color: var(--text-1);
+  transition: all .12s; width: 100%;
+}
+.input:hover { border-color: var(--border-mid); }
+.input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45,95,79,.1); }
+.input::placeholder { color: var(--text-3); }
+.textarea { padding: 10px 12px; height: auto; resize: vertical; line-height: 1.6; }
+.select-wrap { position: relative; }
+.select-wrap select { -webkit-appearance: none; appearance: none; padding-right: 32px; cursor: pointer; }
+.select-arrow { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-3); }
+.input-group { display: flex; gap: 0; }
+.input-group .input { border-radius: var(--r-md) 0 0 var(--r-md); border-right: none; }
+.input-group .btn { border-radius: 0 var(--r-md) var(--r-md) 0; }
+.field-error { font-size: 12px; color: var(--danger); }
+.input-error { border-color: var(--danger) !important; }
+
+/* Section title */
+.section-title { font-size: 18px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+.section-sub { font-size: 14px; color: var(--text-2); margin-bottom: 0; }
+.section-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+
+/* Divider */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 1px solid var(--border); }
+th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+td { padding: 14px 16px; font-size: 14px; color: var(--text-1); border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tbody tr { transition: background .1s; }
+tbody tr:hover { background: var(--bg); }
+
+/* Stat card grid */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { padding: 20px 24px; }
+.stat-label { font-size: 12px; font-weight: 500; color: var(--text-3); margin-bottom: 8px; letter-spacing: .04em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+.stat-val { font-size: 28px; font-weight: 700; color: var(--text-1); line-height: 1; margin-bottom: 6px; }
+.stat-delta { font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.delta-up { color: var(--selfcare); }
+.delta-dn { color: var(--danger); }
+
+/* Toggle switch */
+.toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.toggle-wrap:last-child { border-bottom: none; }
+.toggle-info .toggle-label { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.toggle-info .toggle-desc { font-size: 13px; color: var(--text-2); }
+.toggle { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute; inset: 0; border-radius: 99px; cursor: pointer;
+  background: var(--border-mid); transition: background .2s;
+}
+.toggle input:checked + .toggle-track { background: var(--primary); }
+.toggle-thumb {
+  position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; top: 2px; left: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  transition: transform .2s; pointer-events: none;
+}
+.toggle input:checked ~ .toggle-thumb { transform: translateX(18px); }
+
+/* ── TOAST SYSTEM ─────────────────────────────────────────────────────── */
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.toast {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; background: var(--surface);
+  border-radius: var(--r-lg); box-shadow: var(--sh-xl);
+  border: 1px solid var(--border);
+  min-width: 320px; max-width: 400px;
+  pointer-events: all;
+  animation: toast-in .25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toast.toast-out { animation: toast-out .2s ease-in forwards; }
+@keyframes toast-in { from { opacity: 0; transform: translateX(40px) scale(.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes toast-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
+.toast-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.toast-success .toast-icon { background: var(--selfcare-bg); color: var(--selfcare); }
+.toast-error   .toast-icon { background: var(--danger-bg); color: var(--danger); }
+.toast-warning .toast-icon { background: var(--caution-bg); color: var(--caution); }
+.toast-info    .toast-icon { background: var(--info-bg); color: var(--info); }
+.toast-success { border-left: 3px solid var(--selfcare); }
+.toast-error   { border-left: 3px solid var(--danger); }
+.toast-warning { border-left: 3px solid var(--caution); }
+.toast-info    { border-left: 3px solid var(--info); }
+.toast-content { flex: 1; min-width: 0; }
+.toast-title { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 2px; }
+.toast-msg { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+.toast-close { width: 24px; height: 24px; border-radius: 6px; border: none; background: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.toast-close:hover { background: var(--bg-tint); color: var(--text-1); }
+.toast-bar { position: absolute; bottom: 0; left: 0; height: 2px; background: currentColor; border-radius: 0 0 var(--r-lg) var(--r-lg); }
+.toast-success .toast-bar { background: var(--selfcare); }
+.toast-error   .toast-bar { background: var(--danger); }
+.toast-warning .toast-bar { background: var(--caution); }
+.toast-info    .toast-bar { background: var(--info); }
+.toast { position: relative; overflow: hidden; }
+
+/* ── LANDING PAGE ─────────────────────────────────────────────────────── */
+.landing-wrap { width: 100%; min-height: 100vh; background: var(--bg); }
+.landing-nav {
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 80px; height: 64px;
+  background: rgba(245,241,234,.9); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.landing-nav-links { display: flex; gap: 4px; margin-left: 32px; }
+.nav-link { padding: 6px 14px; border-radius: var(--r-md); font-size: 14px; font-weight: 500; color: var(--text-2); cursor: pointer; transition: all .12s; border: none; background: none; }
+.nav-link:hover { color: var(--text-1); background: var(--bg-tint); }
+.landing-nav .spacer { flex: 1; }
+
+.hero-section {
+  padding: 100px 80px 80px;
+  display: grid; grid-template-columns: 1fr 480px; gap: 80px; align-items: center;
+  max-width: 1400px; margin: 0 auto;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-lt); color: var(--caution);
+  border: 1px solid rgba(212,165,116,.35);
+  padding: 5px 14px; border-radius: 99px;
+  font-size: 13px; font-weight: 500; margin-bottom: 28px;
+}
+.hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--caution); animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+.hero-h1 { font-family: var(--font-serif); font-size: 60px; font-weight: 400; line-height: 1.1; letter-spacing: -.5px; margin-bottom: 24px; color: var(--text-1); }
+.hero-h1 em { font-style: italic; color: var(--primary); }
+.hero-p { font-size: 18px; color: var(--text-2); line-height: 1.7; margin-bottom: 40px; max-width: 480px; }
+.hero-cta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 48px; }
+.hero-cta-row .btn-lg { font-size: 16px; }
+.hero-social-proof { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-2); }
+.avatar-stack { display: flex; }
+.avatar-stack .a-item { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--surface); margin-left: -8px; background: var(--primary); color: #fff; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.avatar-stack .a-item:first-child { margin-left: 0; }
+
+.hero-card {
+  background: var(--surface); border-radius: var(--r-xl);
+  border: 1px solid var(--border); box-shadow: var(--sh-xl);
+  overflow: hidden;
+}
+.hero-card-top { padding: 24px; border-bottom: 1px solid var(--border); }
+.hero-card-chat { padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
+.hc-bubble { padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.55; max-width: 85%; }
+.hc-bubble-ai { background: var(--bg); border: 1px solid var(--border); border-radius: 14px 14px 14px 4px; color: var(--text-1); }
+.hc-bubble-user { background: var(--primary); color: #fff; align-self: flex-end; border-radius: 14px 14px 4px 14px; }
+.hero-card-result { padding: 16px 24px; background: var(--selfcare-bg); border-top: 1px solid rgba(107,142,111,.2); }
+.hcr-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--selfcare); margin-bottom: 8px; }
+.hcr-title { font-size: 15px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+.hcr-sub { font-size: 13px; color: var(--text-2); }
+
+.limited-banner {
+  background: var(--caution-bg); border: 1px solid rgba(198,139,60,.3);
+  border-radius: var(--r-lg); padding: 20px 28px;
+  display: flex; align-items: center; gap: 20px;
+  margin: 0 80px 48px; max-width: 1240px;
+}
+.lim-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(198,139,60,.15); display: flex; align-items: center; justify-content: center; color: var(--caution); flex-shrink: 0; }
+.lim-text .lim-title { font-size: 15px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+.lim-text .lim-sub { font-size: 13px; color: var(--text-2); }
+.lim-cta { margin-left: auto; flex-shrink: 0; }
+
+.features-section { padding: 0 80px 80px; max-width: 1400px; margin: 0 auto; }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+.feature-card { padding: 28px; }
+.feature-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--primary-tint); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.feature-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.feature-body { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+
+/* ── DASHBOARD ────────────────────────────────────────────────────────── */
+.dash-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+
+.chart-area { height: 240px; display: flex; align-items: flex-end; gap: 10px; padding: 16px 0 0; position: relative; }
+.chart-grid-lines { position: absolute; left: 0; right: 0; top: 16px; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+.chart-grid-line { height: 1px; background: var(--border); width: 100%; }
+.chart-bars { display: flex; align-items: flex-end; gap: 10px; height: 100%; width: 100%; }
+.chart-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; height: 100%; justify-content: flex-end; }
+.chart-bar { width: 100%; border-radius: 6px 6px 0 0; transition: opacity .15s; cursor: pointer; }
+.chart-bar:hover { opacity: .8; }
+.chart-month { font-size: 11px; color: var(--text-3); font-weight: 500; }
+.chart-legend { display: flex; gap: 20px; margin-top: 12px; }
+.chart-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-2); }
+.chart-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+.activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.activity-dot-green { background: var(--selfcare); }
+.activity-dot-amber { background: var(--caution); }
+.activity-dot-red   { background: var(--danger); }
+.activity-time { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+.activity-text { font-size: 14px; color: var(--text-1); line-height: 1.5; }
+.activity-text strong { font-weight: 500; }
+
+.health-score-ring { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+.hs-svg { transform: rotate(-90deg); }
+.hs-track { fill: none; stroke: var(--border); stroke-width: 10; }
+.hs-fill { fill: none; stroke: var(--selfcare); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 67.8; transition: stroke-dashoffset .6s ease; }
+.hs-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.hs-number { font-size: 28px; font-weight: 700; color: var(--text-1); line-height: 1; }
+.hs-of { font-size: 12px; color: var(--text-3); }
+
+/* ── PROFILE PAGE ─────────────────────────────────────────────────────── */
+.profile-layout { display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+.profile-card { padding: 28px; text-align: center; }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-lt) 100%); color: #fff; font-size: 28px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-family: var(--font-serif); }
+.profile-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.profile-email { font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
+.profile-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.profile-stat { text-align: center; padding: 14px 8px; background: var(--bg); border-radius: var(--r-md); }
+.profile-stat .val { font-size: 22px; font-weight: 700; color: var(--text-1); }
+.profile-stat .lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid.single { grid-template-columns: 1fr; }
+.form-section-title { font-size: 14px; font-weight: 600; color: var(--text-1); padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+.password-strength { height: 3px; border-radius: 99px; margin-top: 8px; overflow: hidden; background: var(--border); }
+.ps-fill { height: 100%; border-radius: 99px; transition: width .3s, background .3s; }
+.ps-weak { width: 33%; background: var(--danger); }
+.ps-medium { width: 66%; background: var(--caution); }
+.ps-strong { width: 100%; background: var(--selfcare); }
+
+/* ── REPORTS PAGE ─────────────────────────────────────────────────────── */
+.filters-bar { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+.filter-chip { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 34px; border: 1px solid var(--border); border-radius: 99px; font-size: 13px; font-weight: 500; color: var(--text-2); background: var(--surface); cursor: pointer; transition: all .12s; white-space: nowrap; }
+.filter-chip:hover { border-color: var(--border-mid); color: var(--text-1); }
+.filter-chip.active { border-color: var(--primary); background: var(--primary-tint); color: var(--primary); }
+.filter-chip svg { width: 14px; height: 14px; }
+
+.report-chart { height: 200px; display: flex; align-items: flex-end; gap: 6px; padding: 0 4px; }
+.rc-col { flex: 1; display: flex; align-items: flex-end; justify-content: center; }
+.rc-bar { width: 100%; border-radius: 4px 4px 0 0; cursor: pointer; transition: opacity .15s; }
+.rc-bar:hover { opacity: .75; }
+
+.empty-state { padding: 64px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.empty-icon { width: 64px; height: 64px; border-radius: 20px; background: var(--bg-tint); display: flex; align-items: center; justify-content: center; color: var(--text-3); }
+.empty-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.empty-sub { font-size: 14px; color: var(--text-2); max-width: 320px; line-height: 1.65; }
+
+/* ── EMERGENCY PAGE ───────────────────────────────────────────────────── */
+.emergency-wrap { min-height: calc(100vh - var(--header-h)); background: #FBEAEA; display: grid; grid-template-columns: 1fr 400px; }
+.em-main { padding: 60px 80px; display: flex; flex-direction: column; gap: 28px; }
+.em-alert-banner { display: flex; align-items: center; gap: 16px; background: var(--danger); color: #fff; padding: 18px 24px; border-radius: var(--r-lg); font-size: 15px; font-weight: 500; animation: pulse-bg 2s ease-in-out infinite; }
+@keyframes pulse-bg { 0%,100% { opacity: 1; } 50% { opacity: .85; } }
+.em-headline { font-family: var(--font-serif); font-size: 52px; font-weight: 400; color: var(--text-1); line-height: 1.12; letter-spacing: -.5px; }
+.em-headline strong { color: var(--danger); font-style: italic; font-weight: 400; }
+.em-sub { font-size: 17px; color: var(--text-2); line-height: 1.7; max-width: 560px; }
+.em-cta-row { display: flex; gap: 16px; }
+.em-call-btn {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--danger); color: #fff;
+  padding: 18px 32px; border-radius: var(--r-lg);
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 24px rgba(178,58,58,.4);
+  border: none; transition: all .12s;
+}
+.em-call-btn:hover { background: #8F2E2E; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(178,58,58,.5); }
+.em-call-btn-sub { font-size: 12px; font-weight: 400; opacity: .8; display: block; margin-top: 2px; }
+.em-locate-btn { display: flex; align-items: center; gap: 10px; padding: 18px 28px; border: 2px solid var(--danger); color: var(--danger); background: transparent; border-radius: var(--r-lg); font-size: 16px; font-weight: 600; cursor: pointer; transition: all .12s; }
+.em-locate-btn:hover { background: var(--danger-bg); }
+.em-symptoms-list { display: flex; flex-direction: column; gap: 10px; }
+.em-symptom { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface); border: 1px solid rgba(178,58,58,.2); border-radius: var(--r-md); font-size: 15px; font-weight: 500; }
+.em-symptom-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex-shrink: 0; }
+.em-sidebar { background: var(--surface); border-left: 1px solid rgba(178,58,58,.15); padding: 40px 32px; display: flex; flex-direction: column; gap: 20px; }
+.em-sidebar-title { font-size: 13px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
+.em-nearby { display: flex; flex-direction: column; gap: 10px; }
+.em-hosp { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: var(--r-md); cursor: pointer; transition: all .12s; }
+.em-hosp:hover { border-color: var(--danger); background: var(--danger-bg); }
+.em-hosp-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--danger-bg); color: var(--danger); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.em-hosp-name { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.em-hosp-dist { font-size: 12px; color: var(--text-2); }
+.em-hosp-arrow { margin-left: auto; color: var(--text-3); }
+.em-instruction { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.em-instruction:last-child { border-bottom: none; }
+.em-inst-num { width: 24px; height: 24px; border-radius: 50%; background: var(--danger-bg); color: var(--danger); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.em-inst-text { font-size: 14px; color: var(--text-1); line-height: 1.55; }
+.em-inst-text span { display: block; font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+/* ── TOASTS PAGE (DEMO) ───────────────────────────────────────────────── */
+.toast-demo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.toast-preview {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 16px; border-radius: var(--r-lg); border: 1px solid var(--border);
+  box-shadow: var(--sh-sm); background: var(--surface);
+  position: relative; overflow: hidden;
+}
+.toast-preview-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+
+/* ── UTILITY ──────────────────────────────────────────────────────────── */
+.flex { display: flex; } .items-center { align-items: center; } .gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; }
+.ml-auto { margin-left: auto; }
+.mt-4  { margin-top: 4px; }  .mt-8  { margin-top: 8px; }
+.mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; } .mt-24 { margin-top: 24px; }
+.mb-4  { margin-bottom: 4px; } .mb-8  { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; } .mb-20 { margin-bottom: 20px; } .mb-24 { margin-bottom: 24px; }
+.text-2 { color: var(--text-2); } .text-3 { color: var(--text-3); }
+.text-sm { font-size: 13px; } .text-xs { font-size: 12px; }
+.font-semibold { font-weight: 600; }
+.w-full { width: 100%; }
+.rounded { border-radius: var(--r-md); }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/* ── SVG ICONS (inline) ──────────────────────────────────────────────── */
+const I = ({ d, size = 16, children, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+    {d ? <path d={d} /> : children}
+  </svg>
+);
+const IHeart     = ({s}) => <I size={s}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-3 2 6 1.5-4 1.5 1H21.8"/></I>;
+const IHistory   = ({s}) => <I size={s}><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 3"/><polyline points="12 7 12 12 14.5 14.5"/></I>;
+const IFile      = ({s}) => <I size={s}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></I>;
+const IUser      = ({s}) => <I size={s}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></I>;
+const ISettings  = ({s}) => <I size={s}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></I>;
+const IBell      = ({s}) => <I size={s}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></I>;
+const ISearch    = ({s}) => <I size={s}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></I>;
+const ILogout    = ({s}) => <I size={s}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></I>;
+const ICheck     = ({s}) => <I size={s}><polyline points="20 6 9 17 4 12"/></I>;
+const IAlert     = ({s}) => <I size={s}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></I>;
+const IInfo      = ({s}) => <I size={s}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></I>;
+const IX         = ({s}) => <I size={s}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></I>;
+const IPhone     = ({s}) => <I size={s}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></I>;
+const IMap       = ({s}) => <I size={s}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></I>;
+const IDownload  = ({s}) => <I size={s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></I>;
+const IShield    = ({s}) => <I size={s}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></I>;
+const IPlus      = ({s}) => <I size={s}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></I>;
+const IArrowR    = ({s}) => <I size={s}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></I>;
+const IEye       = ({s}) => <I size={s}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></I>;
+const IEyeOff    = ({s}) => <I size={s}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></I>;
+const ILock      = ({s}) => <I size={s}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></I>;
+const IStar      = ({s}) => <I size={s}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></I>;
+const ITrend     = ({s}) => <I size={s}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></I>;
+const ICalendar  = ({s}) => <I size={s}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></I>;
+const IFilter    = ({s}) => <I size={s}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></I>;
+const IHospital  = ({s}) => <I size={s}><path d="M12 6v4M10 8h4"/><rect x="3" y="3" width="18" height="18" rx="2"/></I>;
+const IUpload    = ({s}) => <I size={s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></I>;
+const IGrid      = ({s}) => <I size={s}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></I>;
+const IActivity  = ({s}) => <I size={s}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></I>;
+const ISparkle   = ({s}) => <I size={s}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></I>;
+
+/* ── TOAST CONTEXT ───────────────────────────────────────────────────── */
+const ToastCtx = React.createContext(null);
+const useToast = () => React.useContext(ToastCtx);
+
+const ToastProvider = ({ children }) => {
+  const [toasts, setToasts] = React.useState([]);
+  const add = React.useCallback((msg) => {
+    const id = Date.now();
+    setToasts(t => [...t, { id, ...msg }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 4000);
+  }, []);
+  const remove = (id) => setToasts(t => t.filter(x => x.id !== id));
+  return (
+    <ToastCtx.Provider value={add}>
+      {children}
+      <div className="toast-container">
+        {toasts.map(t => <ToastItem key={t.id} {...t} onClose={() => remove(t.id)} />)}
+      </div>
+    </ToastCtx.Provider>
+  );
+};
+
+const TOAST_ICONS = {
+  success: <ICheck s={16} />, error: <IX s={16} />,
+  warning: <IAlert s={16} />, info: <IInfo s={16} />
+};
+
+const ToastItem = ({ type = 'info', title, msg, onClose }) => (
+  <div className={`toast toast-${type}`} role="alert">
+    <div className="toast-icon">{TOAST_ICONS[type]}</div>
+    <div className="toast-content">
+      <div className="toast-title">{title}</div>
+      {msg && <div className="toast-msg">{msg}</div>}
+    </div>
+    <button className="toast-close" onClick={onClose}><IX s={14} /></button>
+    <div className="toast-bar" />
+  </div>
+);
+
+/* ── SIDEBAR NAV ─────────────────────────────────────────────────────── */
+const Sidebar = ({ page, setPage, isLanding, setLanding }) => {
+  const nav = [
+    { id:'dashboard', icon:<IGrid s={16}/>, label:'Dashboard' },
+    { id:'check',     icon:<IHeart s={16}/>, label:'Check Symptoms', badge: null },
+    { id:'history',   icon:<IHistory s={16}/>, label:'History' },
+    { id:'reports',   icon:<IFile s={16}/>, label:'Reports' },
+    { id:'emergency', icon:<IAlert s={16}/>, label:'Emergency', badge: '!' },
+  ];
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-brand">
+        <div className="logo-mark">M</div>
+        <span className="brand-name">MediTriage</span>
+        <span className="brand-badge">PRO</span>
+      </div>
+      <div className="sidebar-section">
+        <div className="sidebar-label" style={{marginBottom:12}}>Menu</div>
+        {nav.map(item => (
+          <button key={item.id}
+            className={`nav-item${page === item.id && !isLanding ? ' active' : ''}`}
+            onClick={() => { setPage(item.id); setLanding(false); }}>
+            {item.icon}
+            {item.label}
+            {item.badge && <span className="nav-badge">{item.badge}</span>}
+          </button>
+        ))}
+        <div className="sidebar-divider" />
+        <button className={`nav-item${page === 'profile' && !isLanding ? ' active' : ''}`}
+          onClick={() => { setPage('profile'); setLanding(false); }}>
+          <IUser s={16} />Profile
+        </button>
+        <button className={`nav-item${page === 'toasts' && !isLanding ? ' active' : ''}`}
+          onClick={() => { setPage('toasts'); setLanding(false); }}>
+          <IBell s={16} />Notifications
+        </button>
+        <button className="nav-item" onClick={() => { setPage('landing'); setLanding(true); }}>
+          <IArrowR s={16} />← Landing page
+        </button>
+      </div>
+      <div className="sidebar-footer">
+        <div className="user-row">
+          <div className="avatar">P</div>
+          <div>
+            <div className="user-name">Priya Sharma</div>
+            <div className="user-role">Free plan · 2 checks left</div>
+          </div>
+          <ILogout s={16} style={{marginLeft:'auto', color:'var(--text-3)'}} />
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+/* ── TOP HEADER ──────────────────────────────────────────────────────── */
+const Header = ({ page, addToast }) => {
+  const titles = { dashboard:'Dashboard', check:'Symptom Check', history:'Check History', reports:'Reports & Analytics', profile:'My Profile', emergency:'Emergency Care', toasts:'Notification System' };
+  return (
+    <header className="top-header">
+      <span className="page-title">{titles[page] || page}</span>
+      <div className="header-spacer" />
+      <div className="header-search">
+        <ISearch s={14} />
+        <span>Search…</span>
+      </div>
+      <button className="header-btn" onClick={() => addToast({ type:'info', title:'No new notifications', msg:'You are all caught up.' })}>
+        <IBell s={16} />
+        <div className="notif-dot" />
+      </button>
+      <div className="header-avatar">P</div>
+    </header>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 1 — LANDING
+══════════════════════════════════════════════════════════════════════ */
+const LandingPage = ({ onEnter }) => (
+  <div className="landing-wrap">
+    {/* Nav */}
+    <nav className="landing-nav">
+      <div className="logo-mark">M</div>
+      <span style={{fontSize:15,fontWeight:600,letterSpacing:'-.3px'}}>MediTriage</span>
+      <div className="landing-nav-links">
+        {['Features','How it works','Pricing','About'].map(l =>
+          <button key={l} className="nav-link">{l}</button>)}
+      </div>
+      <div className="spacer" />
+      <button className="btn btn-ghost">Log in</button>
+      <button className="btn btn-primary" onClick={onEnter}>Get started free</button>
+    </nav>
+
+    {/* Limited-access banner */}
+    <div className="limited-banner">
+      <div className="lim-icon"><IAlert s={20} /></div>
+      <div className="lim-text">
+        <div className="lim-title">You're on the Free plan — 3 checks remaining today</div>
+        <div className="lim-sub">Upgrade to Pro for unlimited checks, full history, and downloadable health reports.</div>
+      </div>
+      <div className="lim-cta">
+        <button className="btn btn-accent btn-lg">Upgrade to Pro <IArrowR s={16} /></button>
+      </div>
+    </div>
+
+    {/* Hero */}
+    <div className="hero-section">
+      <div>
+        <div className="hero-eyebrow">
+          <div className="hero-eyebrow-dot" />
+          AI-powered symptom analysis · Free to use
+        </div>
+        <h1 className="hero-h1">Your health,<br /><em>clearly explained.</em></h1>
+        <p className="hero-p">Describe your symptoms in plain language. Our AI asks the right follow-up questions and gives you trusted guidance — from home remedies to emergency care — in under 60 seconds.</p>
+        <div className="hero-cta-row">
+          <button className="btn btn-primary btn-lg" onClick={onEnter}>Check symptoms now <IArrowR s={18} /></button>
+          <button className="btn btn-secondary btn-lg">Watch demo</button>
+        </div>
+        <div className="hero-social-proof">
+          <div className="avatar-stack">
+            {['P','R','S','M'].map((l,i) => <div key={i} className="a-item">{l}</div>)}
+          </div>
+          <span>Trusted by <strong>48,000+</strong> patients across India</span>
+          <span style={{display:'flex',gap:2,color:'var(--accent)'}}>
+            {[1,2,3,4,5].map(n => <IStar key={n} s={14} />)}
+          </span>
+          <span style={{color:'var(--text-3)'}}>4.8/5 rating</span>
+        </div>
+      </div>
+      {/* Hero card mockup */}
+      <div className="hero-card">
+        <div className="hero-card-top">
+          <div style={{fontSize:11,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--text-3)',marginBottom:12}}>Live example</div>
+          <div style={{fontSize:14,color:'var(--text-2)',marginBottom:12}}>Describing symptoms…</div>
+          <div style={{background:'var(--bg)',border:'1.5px solid var(--border)',borderRadius:10,padding:'12px 14px',fontSize:14,color:'var(--text-2)',fontStyle:'italic'}}>
+            "I've had a fever and sore throat since yesterday. Body aches too."
+          </div>
+        </div>
+        <div className="hero-card-chat">
+          <div className="hc-bubble hc-bubble-ai">How high is the fever? Any difficulty swallowing?</div>
+          <div className="hc-bubble hc-bubble-user">Around 101°F. Swallowing is painful.</div>
+          <div className="hc-bubble hc-bubble-ai">Any rash, ear pain, or white patches on the throat?</div>
+          <div style={{display:'flex',alignItems:'center',gap:8,padding:'4px 0'}}>
+            <div style={{display:'flex',gap:4}}>
+              {[0,1,2].map(i => <div key={i} style={{width:7,height:7,borderRadius:'50%',background:'var(--text-3)',animation:`dot-b .9s ${i*0.15}s ease-in-out infinite`}} />)}
+            </div>
+            <span style={{fontSize:12,color:'var(--text-3)'}}>Analysing…</span>
+          </div>
+        </div>
+        <div className="hero-card-result">
+          <div className="hcr-label">Result — Moderate severity</div>
+          <div className="hcr-title">Likely strep throat or viral pharyngitis</div>
+          <div className="hcr-sub">Visit a clinic within 24 hours. Doctor's prep note generated.</div>
+        </div>
+      </div>
+    </div>
+
+    {/* Features */}
+    <div className="features-section">
+      <div className="section-header">
+        <div>
+          <p style={{fontSize:12,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--primary)',marginBottom:8}}>Why MediTriage</p>
+          <h2 style={{fontFamily:'var(--font-serif)',fontSize:36,fontWeight:400,color:'var(--text-1)'}}>Designed for <em style={{fontStyle:'italic',color:'var(--primary)'}}>real people</em>,<br />not just patients.</h2>
+        </div>
+      </div>
+      <div className="features-grid">
+        {[
+          { icon:<ISparkle s={20}/>, t:'Adaptive AI interview', b:'No rigid forms. The AI asks the most relevant follow-up questions, adapting in real time to your symptom pattern.' },
+          { icon:<IShield s={20}/>, t:'Privacy-first design', b:'Your health data is processed locally where possible. We never sell or share your information. HIPAA-compliant infrastructure.' },
+          { icon:<IActivity s={20}/>, t:'Severity-calibrated results', b:'Three clear tiers: self-care at home, clinic visit within 24h, or emergency now. Never vague, always actionable.' },
+          { icon:<IFile s={20}/>, t:'Downloadable doctor notes', b:'Every assessment generates a one-page PDF summary you can hand to your doctor — saving consultation time.' },
+          { icon:<IHistory s={20}/>, t:'Longitudinal health tracking', b:'Build a personal symptom timeline. Spot recurring patterns. Share your history with your GP.' },
+          { icon:<ICalendar s={20}/>, t:'Multilingual support', b:'Available in English, Hindi, Tamil, and Telugu. Healthcare guidance in the language you think in.' },
+        ].map((f,i) => (
+          <div key={i} className="card card-p feature-card">
+            <div className="feature-icon">{f.icon}</div>
+            <div className="feature-title">{f.t}</div>
+            <div className="feature-body">{f.b}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 2 — DASHBOARD
+══════════════════════════════════════════════════════════════════════ */
+const DashboardPage = ({ addToast }) => {
+  const months = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
+  const vals = [2,1,3,2,4,1,3,2,2,3];
+  const maxV = Math.max(...vals);
+  const activities = [
+    { color:'green', text:<><strong>Self-care result</strong> — Mild cold symptoms. Rest and hydration recommended.</>, time:'3 days ago' },
+    { color:'amber', text:<><strong>See a doctor</strong> — Throat infection. Visited City Clinic, antibiotics prescribed.</>, time:'2 weeks ago' },
+    { color:'green', text:<><strong>Self-care result</strong> — Seasonal allergies. OTC antihistamine suggested.</>, time:'3 weeks ago' },
+    { color:'red',   text:<><strong>Emergency referral</strong> — Severe chest discomfort. Emergency care attended promptly.</>, time:'6 weeks ago' },
+  ];
+  return (
+    <div className="page-body">
+      {/* Stats */}
+      <div className="stat-grid">
+        {[
+          { label:'Total checks', val:'24', delta:'+3 this month', up:true, icon:<IHeart s={16}/> },
+          { label:'Health score', val:'78', delta:'+5 vs last month', up:true, icon:<IActivity s={16}/> },
+          { label:'Avg severity', val:'Low', delta:'Improving', up:true, icon:<ITrend s={16}/> },
+          { label:'Reports generated', val:'8', delta:'2 this month', up:true, icon:<IFile s={16}/> },
+        ].map((s,i) => (
+          <div key={i} className="card card-p stat-card">
+            <div className="stat-label">{s.icon}{s.label}</div>
+            <div className="stat-val">{s.val}</div>
+            <div className={`stat-delta ${s.up ? 'delta-up' : 'delta-dn'}`}>
+              {s.up ? '↑' : '↓'} {s.delta}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="dash-grid">
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+          {/* Chart */}
+          <div className="card">
+            <div className="card-header" style={{display:'flex',alignItems:'center',justifyContent:'space-between',paddingBottom:16}}>
+              <div>
+                <div className="font-semibold" style={{fontSize:15}}>Check frequency</div>
+                <div className="text-sm text-2 mt-4">Symptom checks over 10 months</div>
+              </div>
+              <div style={{display:'flex',gap:8}}>
+                {['3M','6M','1Y'].map((p,i) => <button key={p} className={`filter-chip${i===1?' active':''}`} style={{height:28,fontSize:12}}>{p}</button>)}
+              </div>
+            </div>
+            <div className="card-body">
+              <div className="chart-legend">
+                <div className="chart-legend-item"><div className="chart-legend-dot" style={{background:'var(--primary)'}} />Checks</div>
+              </div>
+              <div className="chart-area" style={{height:180}}>
+                <div className="chart-grid-lines">
+                  {[0,1,2,3].map(i=><div key={i} className="chart-grid-line" />)}
+                </div>
+                <div className="chart-bars">
+                  {months.map((m,i) => (
+                    <div key={m} className="chart-col">
+                      <div className="chart-bar" style={{
+                        height: `${(vals[i]/maxV)*100}%`,
+                        background: i===9 ? 'var(--primary)' : 'var(--primary-tint)',
+                        minHeight: 4
+                      }} />
+                      <span className="chart-month">{m}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent activity */}
+          <div className="card">
+            <div className="card-header" style={{paddingBottom:0}}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <div className="font-semibold" style={{fontSize:15}}>Recent activity</div>
+                <button className="btn btn-ghost btn-sm">View all</button>
+              </div>
+            </div>
+            <div className="card-body">
+              {activities.map((a,i) => (
+                <div key={i} className="activity-item">
+                  <div className={`activity-dot activity-dot-${a.color}`} />
+                  <div style={{flex:1}}>
+                    <div className="activity-text">{a.text}</div>
+                    <div className="activity-time">{a.time}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right col */}
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+          {/* Health score */}
+          <div className="card card-p" style={{textAlign:'center'}}>
+            <div style={{fontSize:13,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',color:'var(--text-3)',marginBottom:20}}>Overall health score</div>
+            <div className="health-score-ring">
+              <svg className="hs-svg" width="120" height="120" viewBox="0 0 120 120">
+                <circle className="hs-track" cx="60" cy="60" r="54" />
+                <circle className="hs-fill" cx="60" cy="60" r="54" />
+              </svg>
+              <div className="hs-label">
+                <div className="hs-number">78</div>
+                <div className="hs-of">/ 100</div>
+              </div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginTop:16}}>
+              {[{l:'Self-care',v:'67%',c:'var(--selfcare)'},{l:'Clinic visits',v:'25%',c:'var(--caution)'},{l:'Emergency',v:'8%',c:'var(--danger)'},{l:'Resolved',v:'96%',c:'var(--primary)'}].map(r=>(
+                <div key={r.l} style={{background:'var(--bg)',borderRadius:'var(--r-sm)',padding:'10px 12px'}}>
+                  <div style={{fontSize:11,color:'var(--text-3)',marginBottom:4}}>{r.l}</div>
+                  <div style={{fontSize:18,fontWeight:700,color:r.c}}>{r.v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick actions */}
+          <div className="card card-p">
+            <div style={{fontSize:13,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',color:'var(--text-3)',marginBottom:16}}>Quick actions</div>
+            {[
+              { label:'New symptom check', icon:<IHeart s={16}/>, color:'var(--primary)' },
+              { label:'Download monthly report', icon:<IDownload s={16}/>, color:'var(--selfcare)' },
+              { label:'Update health profile', icon:<IUser s={16}/>, color:'var(--caution)' },
+            ].map((a,i) => (
+              <button key={i} className="btn btn-secondary btn-full mt-8" style={{justifyContent:'flex-start',gap:10}}
+                onClick={() => addToast({type:'info',title:a.label,msg:'Feature coming soon in this prototype.'})}>
+                <span style={{color:a.color}}>{a.icon}</span>{a.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 3 — PROFILE
+══════════════════════════════════════════════════════════════════════ */
+const ProfilePage = ({ addToast }) => {
+  const [showPw, setShowPw] = React.useState(false);
+  const [pw, setPw] = React.useState('');
+  const strength = pw.length < 6 ? 'weak' : pw.length < 12 ? 'medium' : 'strong';
+  const [saved, setSaved] = React.useState(false);
+  const handleSave = () => {
+    setSaved(true);
+    addToast({ type:'success', title:'Profile updated', msg:'Your changes have been saved.' });
+    setTimeout(() => setSaved(false), 2000);
+  };
+  return (
+    <div className="page-body">
+      <div className="profile-layout">
+        {/* Left card */}
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+          <div className="card card-p profile-card">
+            <div className="profile-avatar">P</div>
+            <div className="profile-name">Priya Sharma</div>
+            <div className="profile-email">priya.sharma@gmail.com</div>
+            <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+              <span className="badge badge-green"><div className="badge-dot" />Active</span>
+              <span className="badge badge-blue"><div className="badge-dot" />Free plan</span>
+            </div>
+            <button className="btn btn-secondary btn-full mt-16"><IUpload s={14} />Change photo</button>
+            <div className="profile-stat-row">
+              <div className="profile-stat"><div className="val">24</div><div className="lbl">Checks</div></div>
+              <div className="profile-stat"><div className="val">8</div><div className="lbl">Reports</div></div>
+              <div className="profile-stat"><div className="val">1.5y</div><div className="lbl">Member</div></div>
+              <div className="profile-stat"><div className="val">78</div><div className="lbl">Health score</div></div>
+            </div>
+          </div>
+          <div className="card card-p">
+            <div className="form-section-title"><IShield s={14} style={{color:'var(--selfcare)'}} />Privacy &amp; data</div>
+            <div className="toggle-wrap">
+              <div className="toggle-info"><div className="toggle-label">Share anonymised data</div><div className="toggle-desc">Help improve AI accuracy</div></div>
+              <label className="toggle"><input type="checkbox" defaultChecked /><div className="toggle-track" /><div className="toggle-thumb" /></label>
+            </div>
+            <div className="toggle-wrap">
+              <div className="toggle-info"><div className="toggle-label">Email reminders</div><div className="toggle-desc">Weekly health check prompts</div></div>
+              <label className="toggle"><input type="checkbox" defaultChecked /><div className="toggle-track" /><div className="toggle-thumb" /></label>
+            </div>
+            <div className="toggle-wrap">
+              <div className="toggle-info"><div className="toggle-label">SMS alerts</div><div className="toggle-desc">Urgent notifications only</div></div>
+              <label className="toggle"><input type="checkbox" /><div className="toggle-track" /><div className="toggle-thumb" /></label>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: forms */}
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+          {/* Personal info */}
+          <div className="card card-p">
+            <div className="form-section-title"><IUser s={14} />Personal information</div>
+            <div className="form-grid mb-20">
+              <div className="field"><label className="field-label">First name</label><input className="input" defaultValue="Priya" /></div>
+              <div className="field"><label className="field-label">Last name</label><input className="input" defaultValue="Sharma" /></div>
+              <div className="field"><label className="field-label">Email address</label><input className="input" type="email" defaultValue="priya.sharma@gmail.com" /></div>
+              <div className="field"><label className="field-label">Phone number</label><input className="input" type="tel" defaultValue="+91 98765 43210" /></div>
+              <div className="field"><label className="field-label">Date of birth</label><input className="input" type="date" defaultValue="1992-08-14" /></div>
+              <div className="field">
+                <label className="field-label">Gender</label>
+                <div className="select-wrap">
+                  <select className="input"><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option></select>
+                  <div className="select-arrow">▾</div>
+                </div>
+              </div>
+            </div>
+            <div className="divider" />
+            {/* Health context */}
+            <div className="form-section-title"><IActivity s={14} />Health context</div>
+            <div className="form-grid mb-20">
+              <div className="field"><label className="field-label">Chronic conditions</label><input className="input" placeholder="e.g. Asthma, Type 2 diabetes…" /></div>
+              <div className="field"><label className="field-label">Known allergies</label><input className="input" placeholder="e.g. Penicillin, Peanuts…" /></div>
+              <div className="field" style={{gridColumn:'span 2'}}><label className="field-label">Current medications <span style={{fontSize:12,color:'var(--text-3)',fontWeight:400}}>— optional</span></label><textarea className="input textarea" rows={3} placeholder="List any medications you're currently taking…" /></div>
+            </div>
+            <div style={{display:'flex',gap:12,justifyContent:'flex-end'}}>
+              <button className="btn btn-secondary">Discard changes</button>
+              <button className={`btn btn-primary`} onClick={handleSave} style={{gap:8}}>
+                {saved ? <><ICheck s={14} />Saved!</> : <>Save changes</>}
+              </button>
+            </div>
+          </div>
+
+          {/* Password */}
+          <div className="card card-p">
+            <div className="form-section-title"><ILock s={14} />Change password</div>
+            <div className="form-grid">
+              <div className="field" style={{gridColumn:'span 2'}}>
+                <label className="field-label">Current password</label>
+                <input className="input" type="password" placeholder="Enter current password" />
+              </div>
+              <div className="field">
+                <label className="field-label">New password</label>
+                <div style={{position:'relative'}}>
+                  <input className="input" type={showPw ? 'text' : 'password'} placeholder="Min. 12 characters" value={pw} onChange={e=>setPw(e.target.value)} style={{paddingRight:42}} />
+                  <button onClick={()=>setShowPw(v=>!v)} style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',color:'var(--text-3)',cursor:'pointer'}}>
+                    {showPw ? <IEyeOff s={16}/> : <IEye s={16}/>}
+                  </button>
+                </div>
+                {pw && <div className="password-strength"><div className={`ps-fill ps-${strength}`} /></div>}
+                {pw && <div style={{fontSize:11,color:'var(--text-3)',marginTop:4}}>Strength: <strong style={{color:strength==='strong'?'var(--selfcare)':strength==='medium'?'var(--caution)':'var(--danger)'}}>{strength}</strong></div>}
+              </div>
+              <div className="field">
+                <label className="field-label">Confirm new password</label>
+                <input className="input" type={showPw ? 'text' : 'password'} placeholder="Repeat new password" />
+              </div>
+            </div>
+            <div style={{display:'flex',justifyContent:'flex-end',marginTop:20}}>
+              <button className="btn btn-primary" onClick={() => addToast({type:'success',title:'Password updated',msg:'Your password has been changed successfully.'})}>Update password</button>
+            </div>
+          </div>
+
+          {/* Danger zone */}
+          <div className="card card-p" style={{borderColor:'rgba(178,58,58,.2)'}}>
+            <div className="form-section-title" style={{color:'var(--danger)'}}><IAlert s={14} />Danger zone</div>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 0'}}>
+              <div><div style={{fontSize:14,fontWeight:500}}>Delete account</div><div style={{fontSize:13,color:'var(--text-2)'}}>Permanently remove all your data. This cannot be undone.</div></div>
+              <button className="btn btn-danger btn-sm" onClick={() => addToast({type:'error',title:'Delete account',msg:'This action is irreversible. Please contact support.'})}>Delete account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 4 — REPORTS
+══════════════════════════════════════════════════════════════════════ */
+const ReportsPage = ({ addToast }) => {
+  const [empty, setEmpty] = React.useState(false);
+  const [activeFilter, setActiveFilter] = React.useState('All');
+  const rows = [
+    { date:'27 Apr 2026', symptoms:'Fever, body aches, cough',   severity:'Moderate', result:'See doctor',   status:'Resolved', id:'#R0024' },
+    { date:'14 Apr 2026', symptoms:'Runny nose, mild sore throat', severity:'Low',     result:'Self-care',  status:'Resolved', id:'#R0023' },
+    { date:'02 Apr 2026', symptoms:'Seasonal allergies, itchy eyes', severity:'Low',   result:'Self-care',  status:'Resolved', id:'#R0022' },
+    { date:'18 Mar 2026', symptoms:'Chest pain, shortness of breath', severity:'High', result:'Emergency',  status:'Attended', id:'#R0021' },
+    { date:'04 Mar 2026', symptoms:'Persistent headache, fatigue', severity:'Moderate', result:'See doctor', status:'Resolved', id:'#R0020' },
+    { date:'20 Feb 2026', symptoms:'Mild cough, congestion',       severity:'Low',     result:'Self-care',  status:'Resolved', id:'#R0019' },
+  ].filter(r => activeFilter === 'All' || r.result.includes(activeFilter));
+
+  const severityBadge = s => s === 'Low' ? <span className="badge badge-green"><div className="badge-dot"/>Low</span>
+    : s === 'Moderate' ? <span className="badge badge-amber"><div className="badge-dot"/>Moderate</span>
+    : <span className="badge badge-red"><div className="badge-dot"/>High</span>;
+  const rcHeights = [40,60,80,55,90,70,45,65,75,60];
+  const rcColors  = ['var(--primary-tint)','var(--primary-tint)','var(--primary)','var(--primary-tint)','var(--primary)','var(--primary-tint)','var(--primary-tint)','var(--primary-tint)','var(--primary)','var(--primary-tint)'];
+
+  return (
+    <div className="page-body">
+      {/* Summary stats */}
+      <div className="stat-grid mb-24">
+        {[
+          { label:'Total reports', val:'24', icon:<IFile s={16}/> },
+          { label:'Self-care', val:'14', icon:<IShield s={16}/> },
+          { label:'Clinic visits', val:'8', icon:<IActivity s={16}/> },
+          { label:'Emergency', val:'2', icon:<IAlert s={16}/> },
+        ].map((s,i) => (
+          <div key={i} className="card card-p stat-card">
+            <div className="stat-label">{s.icon}{s.label}</div>
+            <div className="stat-val">{s.val}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Chart + filters */}
+      <div className="card mb-24">
+        <div className="card-header" style={{display:'flex',alignItems:'center',justifyContent:'space-between',paddingBottom:0}}>
+          <div>
+            <div className="font-semibold" style={{fontSize:15}}>Symptom trends</div>
+            <div className="text-sm text-2 mt-4">Check frequency over the past 10 weeks</div>
+          </div>
+          <div style={{display:'flex',gap:8}}>
+            <button className="btn btn-secondary btn-sm"><ICalendar s={13}/>Apr 2026</button>
+            <button className="btn btn-primary btn-sm" onClick={() => addToast({type:'success',title:'Report exported',msg:'analytics-apr-2026.pdf is downloading.'})}><IDownload s={13}/>Export PDF</button>
+          </div>
+        </div>
+        <div className="card-body">
+          <div className="report-chart">
+            {rcHeights.map((h,i) => (
+              <div key={i} className="rc-col">
+                <div className="rc-bar" style={{height:h+'%',background:rcColors[i],minHeight:6}} />
+              </div>
+            ))}
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between',paddingTop:8}}>
+            {['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10'].map(w => <span key={w} style={{fontSize:11,color:'var(--text-3)'}}>{w}</span>)}
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="card">
+        <div className="card-header" style={{display:'flex',alignItems:'center',justifyContent:'space-between',paddingBottom:16}}>
+          <div className="font-semibold" style={{fontSize:15}}>Check history</div>
+          <div className="flex items-center gap-8">
+            <button className="btn btn-ghost btn-sm" onClick={() => setEmpty(e=>!e)}>
+              {empty ? 'Show data' : 'Toggle empty state'}
+            </button>
+          </div>
+        </div>
+        <div className="filters-bar" style={{padding:'0 24px 16px'}}>
+          {['All','Self-care','See doctor','Emergency'].map(f => (
+            <button key={f} className={`filter-chip${f===activeFilter?' active':''}`} onClick={()=>setActiveFilter(f)}>{f}</button>
+          ))}
+          <div style={{marginLeft:'auto',display:'flex',gap:8}}>
+            <button className="filter-chip"><ICalendar s={14}/>Date range</button>
+            <button className="filter-chip"><IFilter s={14}/>Filters</button>
+          </div>
+        </div>
+        {empty || rows.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon"><IFile s={28}/></div>
+            <div className="empty-title">No reports found</div>
+            <div className="empty-sub">There are no reports matching the current filters. Try adjusting the date range or filter criteria.</div>
+            <button className="btn btn-secondary" onClick={()=>{setActiveFilter('All');setEmpty(false);}}>Clear filters</button>
+          </div>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Date</th><th>Symptoms</th><th>Severity</th><th>Result</th><th>Status</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r,i) => (
+                  <tr key={i}>
+                    <td><span style={{fontFamily:'monospace',fontSize:12,color:'var(--text-3)'}}>{r.id}</span></td>
+                    <td><span style={{whiteSpace:'nowrap'}}>{r.date}</span></td>
+                    <td style={{maxWidth:220,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.symptoms}</td>
+                    <td>{severityBadge(r.severity)}</td>
+                    <td><span style={{fontSize:13,fontWeight:500}}>{r.result}</span></td>
+                    <td><span className={`badge ${r.status==='Attended'?'badge-blue':'badge-green'}`}><div className="badge-dot" />{r.status}</span></td>
+                    <td style={{textAlign:'right'}}>
+                      <button className="btn btn-ghost btn-sm" onClick={() => addToast({type:'info',title:'Opening report '+r.id,msg:'PDF preview loading…'})}><IDownload s={13}/>PDF</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <div className="card-footer" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+          <span style={{fontSize:13,color:'var(--text-2)'}}>{rows.length} of 24 reports</span>
+          <div style={{display:'flex',gap:8}}>
+            <button className="btn btn-secondary btn-sm">← Previous</button>
+            <button className="btn btn-secondary btn-sm">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 5 — EMERGENCY
+══════════════════════════════════════════════════════════════════════ */
+const EmergencyPage = ({ addToast }) => (
+  <div className="page-body no-pad">
+    <div className="emergency-wrap">
+      <div className="em-main">
+        <div className="em-alert-banner">
+          <IAlert s={20} />
+          <span>Critical alert — This patient may require <strong>immediate emergency care</strong>. Do not wait.</span>
+        </div>
+        <h1 className="em-headline">Seek emergency care<br /><strong>right now.</strong></h1>
+        <p className="em-sub">Based on the reported symptoms, this condition may be life-threatening. Call emergency services immediately or have someone drive you to the nearest emergency room.</p>
+        <div className="em-cta-row">
+          <button className="em-call-btn" onClick={() => addToast({type:'error',title:'Calling 108',msg:'Connecting to national ambulance service…'})}>
+            <IPhone s={28} />
+            <div>
+              <div>Call 108</div>
+              <span className="em-call-btn-sub">National Ambulance — Free</span>
+            </div>
+          </button>
+          <button className="em-locate-btn" onClick={() => addToast({type:'info',title:'Finding nearest ER',msg:'3 hospitals within 2 km of your location.'})}>
+            <IMap s={22} />
+            Locate nearest ER
+          </button>
+        </div>
+        <div>
+          <div style={{fontSize:13,fontWeight:600,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--danger)',marginBottom:12}}>Warning signs observed</div>
+          <div className="em-symptoms-list">
+            {['Severe chest pain or tightness','Difficulty breathing at rest','Sudden confusion or altered consciousness','Heart rate above 130 bpm'].map(s => (
+              <div key={s} className="em-symptom"><div className="em-symptom-dot" />{s}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* Sidebar */}
+      <div className="em-sidebar">
+        <div>
+          <div className="em-sidebar-title">Nearest hospitals</div>
+          <div className="em-nearby mt-8">
+            {[
+              {name:'Apollo Emergency', dist:'0.8 km · Open 24h'},
+              {name:'City General ER', dist:'1.4 km · Open 24h'},
+              {name:'Fortis Trauma Centre', dist:'2.1 km · Open 24h'},
+            ].map(h => (
+              <div key={h.name} className="em-hosp" onClick={() => addToast({type:'info',title:'Navigating to '+h.name,msg:h.dist})}>
+                <div className="em-hosp-icon"><IHospital s={18}/></div>
+                <div><div className="em-hosp-name">{h.name}</div><div className="em-hosp-dist">{h.dist}</div></div>
+                <div className="em-hosp-arrow"><IArrowR s={14}/></div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="divider" />
+        <div>
+          <div className="em-sidebar-title">While you wait</div>
+          {[
+            ['Stay still and calm','Avoid food, water, or medication unless directed'],
+            ['Inform someone nearby','Tell a friend, family member, or neighbour immediately'],
+            ['Unlock your front door','Make it easy for paramedics to enter quickly'],
+            ['Bring ID and any medication list','Speeds up triage on arrival'],
+          ].map(([title, sub],i) => (
+            <div key={i} className="em-instruction">
+              <div className="em-inst-num">{i+1}</div>
+              <div className="em-inst-text">{title}<span>{sub}</span></div>
+            </div>
+          ))}
+        </div>
+        <div className="divider" />
+        <div>
+          <div className="em-sidebar-title">Share location</div>
+          <button className="btn btn-secondary btn-full mt-8" onClick={() => addToast({type:'success',title:'Location shared',msg:'Your GPS location has been shared with emergency services.'})}>
+            <IMap s={15}/>Share my GPS location
+          </button>
+          <button className="btn btn-ghost btn-full mt-8" style={{color:'var(--danger)'}} onClick={() => addToast({type:'warning',title:'False alarm',msg:'This check has been marked as a false alarm.'})} >
+            This was a false alarm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 6 — TOAST DEMO PAGE
+══════════════════════════════════════════════════════════════════════ */
+const ToastDemoPage = ({ addToast }) => {
+  const toastTypes = [
+    { type:'success', title:'Profile saved successfully', msg:'Your changes have been applied and are now live.', icon:<ICheck s={18}/>, bar:'var(--selfcare)', bg:'var(--selfcare-bg)', color:'var(--selfcare)' },
+    { type:'error',   title:'Check failed to submit', msg:'There was a network error. Please check your connection and try again.', icon:<IX s={18}/>, bar:'var(--danger)', bg:'var(--danger-bg)', color:'var(--danger)' },
+    { type:'warning', title:'2 checks remaining today', msg:'You\'re on the Free plan. Upgrade to Pro for unlimited checks.', icon:<IAlert s={18}/>, bar:'var(--caution)', bg:'var(--caution-bg)', color:'var(--caution)' },
+    { type:'info',    title:'New feature available', msg:'You can now download multilingual health reports in Hindi and Tamil.', icon:<IInfo s={18}/>, bar:'var(--info)', bg:'var(--info-bg)', color:'var(--info)' },
+  ];
+  return (
+    <div className="page-body">
+      <div className="section-header mb-24">
+        <div>
+          <div className="section-title">Notification system</div>
+          <div className="section-sub mt-4">Modern toast component with 4 semantic states. Click any card to trigger a live example.</div>
+        </div>
+      </div>
+
+      <div className="toast-demo-grid mb-24">
+        {toastTypes.map(t => (
+          <div key={t.type} className="toast-preview" style={{cursor:'pointer',transition:'transform .12s, box-shadow .12s'}}
+            onClick={() => addToast({type:t.type,title:t.title,msg:t.msg})}
+            onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='var(--sh-md)';}}
+            onMouseLeave={e=>{e.currentTarget.style.transform='';e.currentTarget.style.boxShadow='';}}>
+            <div style={{width:36,height:36,borderRadius:10,background:t.bg,color:t.color,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+              {t.icon}
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:14,fontWeight:600,marginBottom:3}}>{t.title}</div>
+              <div style={{fontSize:13,color:'var(--text-2)',lineHeight:1.5}}>{t.msg}</div>
+            </div>
+            <div className="toast-preview-bar" style={{background:t.bar}} />
+          </div>
+        ))}
+      </div>
+
+      {/* Anatomy */}
+      <div className="card card-p">
+        <div className="form-section-title"><IInfo s={14}/>Toast anatomy &amp; behaviour</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
+          {[
+            { t:'Positioning', b:'Top-right corner, 20px from edges. Toasts stack vertically with 10px gap. Never block primary actions.' },
+            { t:'Auto-dismiss', b:'4-second timeout. User can manually dismiss via the × button. Progress bar indicates time remaining.' },
+            { t:'Animation', b:'Slide-in from right with spring easing (cubic-bezier .34 1.56 .64 1). Slide-out on dismiss.' },
+            { t:'Stacking limit', b:'Maximum 4 toasts visible at once. Older toasts are dismissed automatically when limit is reached.' },
+            { t:'Accessibility', b:'role="alert" for screen readers. Toasts are announced. Focus is not stolen from the current task.' },
+            { t:'Semantic states', b:'Success (green), Error (red), Warning (amber), Info (blue). Each has a distinct icon and accent bar.' },
+          ].map(({t,b},i) => (
+            <div key={i} style={{background:'var(--bg)',borderRadius:'var(--r-md)',padding:'16px'}}>
+              <div style={{fontSize:13,fontWeight:600,marginBottom:6}}>{t}</div>
+              <div style={{fontSize:13,color:'var(--text-2)',lineHeight:1.65}}>{b}</div>
+            </div>
+          ))}
+        </div>
+        <div className="divider" />
+        <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+          <span style={{fontSize:13,color:'var(--text-2)',alignSelf:'center'}}>Fire all at once →</span>
+          {toastTypes.map(t => (
+            <button key={t.type} className="btn btn-secondary btn-sm"
+              onClick={() => addToast({type:t.type,title:t.title,msg:t.msg})}>
+              {t.type.charAt(0).toUpperCase()+t.type.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── SIMPLE CHECK SCREEN (placeholder for nav completeness) ─────── */
+const CheckScreen = ({ addToast }) => {
+  const [step, setStep] = React.useState(0);
+  const [input, setInput] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const handleAnalyse = () => {
+    if (!input.trim()) { addToast({type:'warning',title:'Please describe your symptoms',msg:'Enter at least a short description to continue.'}); return; }
+    setLoading(true);
+    setTimeout(() => { setLoading(false); setStep(1); }, 1800);
+  };
+  return (
+    <div className="page-body">
+      <div style={{maxWidth:680,margin:'0 auto'}}>
+        {step === 0 && (<>
+          <div className="section-header mb-24">
+            <div>
+              <div className="section-title" style={{fontFamily:'var(--font-serif)',fontWeight:400,fontSize:28}}>What's bothering you?</div>
+              <div className="section-sub mt-4">Describe your symptoms in plain language — no medical terms needed.</div>
+            </div>
+          </div>
+          <div className="card card-p" style={{marginBottom:16}}>
+            <div className="field mb-16">
+              <label className="field-label">Describe your symptoms</label>
+              <textarea className="input textarea" rows={5} placeholder="e.g. I've had a high fever since yesterday, body aches, and feel very tired…" value={input} onChange={e=>setInput(e.target.value)} style={{fontSize:16,lineHeight:1.65}} />
+              <div className="field-hint mt-4">Hindi / தமி / తె also accepted</div>
+            </div>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:20}}>
+              {['Fever','Headache','Chest pain','Cough','Stomach ache','Dizziness','Sore throat','Fatigue'].map(c=>(
+                <button key={c} className="filter-chip" onClick={()=>setInput(v=>v?v+', '+c.toLowerCase():c.toLowerCase())}>{c}</button>
+              ))}
+            </div>
+            <button className={`btn btn-primary btn-full btn-lg`} onClick={handleAnalyse} disabled={loading}>
+              {loading ? <><div style={{width:18,height:18,border:'2px solid rgba(255,255,255,.3)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin .8s linear infinite'}} />Analysing…</> : <>Analyse symptoms <IArrowR s={18}/></>}
+            </button>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:8,fontSize:13,color:'var(--text-3)'}}>
+            <IShield s={14} style={{color:'var(--selfcare)'}}/>
+            Your symptoms are never stored without your consent.
+          </div>
+        </>)}
+        {step === 1 && (
+          <div>
+            <div style={{background:'var(--selfcare-bg)',border:'1px solid rgba(107,142,111,.3)',borderRadius:'var(--r-xl)',padding:24,display:'flex',gap:20,alignItems:'center',marginBottom:20}}>
+              <div style={{width:56,height:56,borderRadius:16,background:'rgba(107,142,111,.2)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--selfcare)',flexShrink:0}}><IShield s={28}/></div>
+              <div><div style={{fontSize:20,fontWeight:600,marginBottom:4}}>Self-care at home</div><div style={{fontSize:14,color:'var(--selfcare)'}}>Low severity · Monitor for 3–5 days</div></div>
+            </div>
+            <div className="card card-p mb-16">
+              <div style={{fontSize:14,color:'var(--text-1)',lineHeight:1.7}}>Likely a <strong>common cold</strong> or mild viral infection. Symptoms should resolve with rest and hydration. No urgent medical visit needed at this stage.</div>
+            </div>
+            <div style={{display:'flex',gap:12}}>
+              <button className="btn btn-primary" onClick={() => addToast({type:'success',title:'Report generated',msg:'Your health report is ready to download.'})}>
+                <IDownload s={15}/>Download doctor's note
+              </button>
+              <button className="btn btn-secondary" onClick={() => setStep(0)}>Start new check</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ── HISTORY SCREEN ─────────────────────────────────────────────── */
+const HistoryPage = () => (
+  <div className="page-body">
+    <div className="section-header mb-20">
+      <div>
+        <div className="section-title">Check history</div>
+        <div className="section-sub mt-4">All previous symptom checks with full details</div>
+      </div>
+      <button className="btn btn-secondary"><IDownload s={14}/>Export history</button>
+    </div>
+    <div className="card">
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Summary</th><th>Severity</th><th>Result</th><th>Duration</th><th></th></tr></thead>
+          <tbody>
+            {[
+              {d:'27 Apr 2026',s:'Fever, body aches, cough',sev:'Moderate',r:'See doctor',dur:'5 min'},
+              {d:'14 Apr 2026',s:'Runny nose, mild sore throat',sev:'Low',r:'Self-care',dur:'3 min'},
+              {d:'02 Apr 2026',s:'Seasonal allergies, itchy eyes',sev:'Low',r:'Self-care',dur:'2 min'},
+              {d:'18 Mar 2026',s:'Chest pain, shortness of breath',sev:'High',r:'Emergency',dur:'7 min'},
+              {d:'04 Mar 2026',s:'Persistent headache, fatigue',sev:'Moderate',r:'See doctor',dur:'6 min'},
+            ].map((r,i) => (
+              <tr key={i}>
+                <td><span style={{whiteSpace:'nowrap',fontSize:13}}>{r.d}</span></td>
+                <td style={{maxWidth:260,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.s}</td>
+                <td>{r.sev==='Low'?<span className="badge badge-green"><div className="badge-dot"/>Low</span>:r.sev==='Moderate'?<span className="badge badge-amber"><div className="badge-dot"/>Moderate</span>:<span className="badge badge-red"><div className="badge-dot"/>High</span>}</td>
+                <td><span style={{fontSize:13,fontWeight:500}}>{r.r}</span></td>
+                <td><span style={{fontSize:13,color:'var(--text-2)'}}>{r.dur}</span></td>
+                <td style={{textAlign:'right'}}><button className="btn btn-ghost btn-sm">View →</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
+/* ── MAIN APP ────────────────────────────────────────────────────── */
+const App = () => {
+  const [page, setPage] = React.useState('dashboard');
+  const [isLanding, setIsLanding] = React.useState(false);
+  const addToast = useToast();
+
+  const pageComponents = {
+    dashboard: <DashboardPage addToast={addToast} />,
+    check:     <CheckScreen addToast={addToast} />,
+    history:   <HistoryPage />,
+    reports:   <ReportsPage addToast={addToast} />,
+    emergency: <EmergencyPage addToast={addToast} />,
+    profile:   <ProfilePage addToast={addToast} />,
+    toasts:    <ToastDemoPage addToast={addToast} />,
+  };
+
+  if (isLanding) {
+    return <LandingPage onEnter={() => { setIsLanding(false); setPage('check'); }} />;
+  }
+
+  return (
+    <div className="app-shell">
+      <Sidebar page={page} setPage={setPage} isLanding={false} setLanding={setIsLanding} />
+      <div className="main-area">
+        <Header page={page} addToast={addToast} />
+        {pageComponents[page]}
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <ToastProvider><App /></ToastProvider>
+);
+</script>
+<style>
+@keyframes dot-b { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Symptom Pre-Screener - UI Design System</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: #fafafa;
+    color: #0a0a0a;
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #0a0a0a;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+    color: #737373;
+    margin-bottom: 48px;
+  }
+  
+  .section {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    border: 1px solid #e5e5e5;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #0a0a0a;
+  }
+  
+  .screen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 32px;
+    margin-top: 24px;
+  }
+  
+  .screen {
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+  }
+  
+  .screen-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .screen-content {
+    padding: 24px;
+    min-height: 400px;
+    background: #fafafa;
+  }
+  
+  /* Component Styles */
+  .input-group {
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #0a0a0a;
+  }
+  
+  .input, .textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.2s;
+  }
+  
+  .input:focus, .textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  
+  .textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-primary {
+    background: #667eea;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+  }
+  
+  .btn-outline {
+    background: white;
+    color: #0a0a0a;
+    border: 1px solid #e5e5e5;
+  }
+  
+  .btn-outline:hover {
+    background: #fafafa;
+  }
+  
+  .card {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #0a0a0a;
+  }
+  
+  .card-subtitle {
+    font-size: 13px;
+    color: #737373;
+    margin-bottom: 12px;
+  }
+  
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .badge-success {
+    background: #dcfce7;
+    color: #166534;
+  }
+  
+  .badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  
+  .badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  
+  .severity-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .severity-low {
+    background: #dcfce7;
+    border-left: 4px solid #16a34a;
+  }
+  
+  .severity-moderate {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+  }
+  
+  .severity-high {
+    background: #fee2e2;
+    border-left: 4px solid #dc2626;
+  }
+  
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .stat-card {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0a0a0a;
+    margin-bottom: 4px;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    color: #737373;
+  }
+  
+  .timeline-item {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 24px;
+  }
+  
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background: #667eea;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #e5e5e5;
+  }
+  
+  .timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 20px;
+    width: 2px;
+    height: calc(100% - 8px);
+    background: #e5e5e5;
+  }
+  
+  .timeline-item:last-child::after {
+    display: none;
+  }
+  
+  .timeline-date {
+    font-size: 12px;
+    color: #737373;
+    margin-bottom: 4px;
+  }
+  
+  .timeline-content {
+    font-size: 14px;
+    color: #0a0a0a;
+  }
+  
+  .chart-placeholder {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    height: 200px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #737373;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 24px;
+  }
+  
+  .tab {
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #737373;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+  }
+  
+  .icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+  }
+  
+  .feature-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .feature-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .feature-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .checkmark {
+    color: #16a34a;
+    font-weight: 600;
+  }
+  
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .comparison-table th,
+  .comparison-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .comparison-table th {
+    font-weight: 600;
+    color: #0a0a0a;
+    background: #fafafa;
+  }
+  
+  .comparison-table td {
+    font-size: 14px;
+    color: #737373;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>AI Symptom Pre-Screener - UI Design System</h1>
+  <p class="subtitle">Complete interface design with shadcn/ui components for healthcare symptom analysis</p>
+
+  <!-- DESIGN TOKENS SECTION -->
+  <div class="section">
+    <h2 class="section-title">Design Tokens</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+      <div>
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Primary Colors</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: #667eea; border-radius: 6px;"></div>
+            <span style="font-size: 13px;">#667eea - Primary</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: #764ba2; border-radius: 6px;"></div>
+            <span style="font-size: 13px;">#764ba2 - Secondary</span>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Semantic Colors</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: #16a34a; border-radius: 6px;"></div>
+            <span style="font-size: 13px;">#16a34a - Success</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: #f59e0b; border-radius: 6px;"></div>
+            <span style="font-size: 13px;">#f59e0b - Warning</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 6px;"></div>
+            <span style="font-size: 13px;">#dc2626 - Danger</span>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Typography</h3>
+        <div style="font-size: 13px; color: #737373;">
+          <p style="margin-bottom: 8px;">Font: Inter / System UI</p>
+          <p style="margin-bottom: 8px;">H1: 32px / 600</p>
+          <p style="margin-bottom: 8px;">H2: 24px / 600</p>
+          <p style="margin-bottom: 8px;">Body: 14px / 400</p>
+          <p>Small: 12px / 400</p>
+        </div>
+      </div>
+      
+      <div>
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Spacing & Borders</h3>
+        <div style="font-size: 13px; color: #737373;">
+          <p style="margin-bottom: 8px;">Border Radius: 8px, 12px, 16px</p>
+          <p style="margin-bottom: 8px;">Spacing: 8, 12, 16, 20, 24, 32px</p>
+          <p>Border: 1px solid #e5e5e5</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN DESIGNS -->
+  <div class="section">
+    <h2 class="section-title">Screen Designs</h2>
+    
+    <div class="screen-grid">
+      
+      <!-- Landing Page -->
+      <div class="screen">
+        <div class="screen-header">
+          <span>01 - Landing Page (Guest)</span>
+          <span>🏠</span>
+        </div>
+        <div class="screen-content">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px;">🩺</div>
+            <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">AI Symptom Pre-Screener</h2>
+            <p style="color: #737373; font-size: 14px;">Get instant health insights and guidance</p>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Quick Check</h3>
+            <p class="card-subtitle">Describe your symptoms in simple language</p>
+            <div class="input-group">
+              <label class="label">What are you experiencing?</label>
+              <textarea class="textarea" placeholder="e.g., I have a headache and fever for 2 days..."></textarea>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;">Analyze Symptoms →</button>
+          </div>
+          
+          <div style="text-align: center; margin-top: 24px;">
+            <p style="font-size: 13px; color: #737373; margin-bottom: 8px;">Guest users: 3 checks per day</p>
+            <button class="btn btn-outline">Sign In for Full Access</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Analysis Result -->
+      <div class="screen">
+        <div class="screen-header">
+          <span>02 - Analysis Result</span>
+          <span>📊</span>
+        </div>
+        <div class="screen-content">
+          <div class="severity-indicator severity-moderate">
+            <div style="font-size: 32px;">⚠️</div>
+            <div>
+              <div style="font-weight: 600; font-size: 16px;">Moderate Severity</div>
+              <div style="font-size: 13px; color: #92400e;">Recommend visiting a clinic within 24 hours</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Analyzed Symptoms</h3>
+            <div class="feature-list">
+              <li><span class="checkmark">✓</span> Fever (38.5°C / 2 days)</li>
+              <li><span class="checkmark">✓</span> Persistent headache</li>
+              <li><span class="checkmark">✓</span> Mild body aches</li>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Recommended Actions</h3>
+            <div style="font-size: 14px; color: #0a0a0a; line-height: 1.7;">
+              <p style="margin-bottom: 12px;"><strong>1. Visit a healthcare provider</strong><br>
+              Schedule an appointment within 24 hours for proper diagnosis.</p>
+              
+              <p style="margin-bottom: 12px;"><strong>2. Monitor symptoms</strong><br>
+              Track temperature every 4 hours and note any changes.</p>
+              
+              <p><strong>3. Self-care measures</strong><br>
+              Rest, stay hydrated, and take OTC pain relievers as needed.</p>
+            </div>
+          </div>
+          
+          <div class="card" style="background: #fef3c7; border-color: #fde047;">
+            <h3 class="card-title" style="color: #92400e;">⚕️ Suggested Medications</h3>
+            <p style="font-size: 13px; color: #92400e;">
+              • Paracetamol 500mg (every 6 hours)<br>
+              • Ibuprofen 200mg (if needed)<br>
+              <em>Consult a doctor before taking any medication</em>
+            </p>
+          </div>
+          
+          <button class="btn btn-primary" style="width: 100%;">Download Health Report</button>
+        </div>
+      </div>
+      
+      <!-- Dashboard (Logged In) -->
+      <div class="screen">
+        <div class="screen-header">
+          <span>03 - User Dashboard</span>
+          <span>📈</span>
+        </div>
+        <div class="screen-content">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 600;">Welcome back, Sarah</h3>
+              <p style="font-size: 13px; color: #737373;">Last check: 3 days ago</p>
+            </div>
+            <button class="btn btn-primary">+ New Check</button>
+          </div>
+          
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value">12</div>
+              <div class="stat-label">Total Checks</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">3</div>
+              <div class="stat-label">This Month</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">Low</div>
+              <div class="stat-label">Avg Severity</div>
+            </div>
+          </div>
+          
+          <div class="tabs">
+            <button class="tab active">Weekly</button>
+            <button class="tab">Monthly</button>
+            <button class="tab">Yearly</button>
+          </div>
+          
+          <div class="chart-placeholder">
+            📊 Symptom Frequency Chart
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Recent Checks</h3>
+            <div class="timeline-item">
+              <div class="timeline-date">Dec 28, 2024</div>
+              <div class="timeline-content">
+                <span class="badge badge-success">Low</span>
+                <span style="margin-left: 8px; font-size: 13px;">Mild cold symptoms</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">Dec 20, 2024</div>
+              <div class="timeline-content">
+                <span class="badge badge-warning">Moderate</span>
+                <span style="margin-left: 8px; font-size: 13px;">Fever and headache</span>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-date">Dec 12, 2024</div>
+              <div class="timeline-content">
+                <span class="badge badge-success">Low</span>
+                <span style="margin-left: 8px; font-size: 13px;">Seasonal allergies</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Symptom History Detail -->
+      <div class="screen">
+        <div class="screen-header">
+          <span>04 - Symptom History</span>
+          <span>📝</span>
+        </div>
+        <div class="screen-content">
+          <div style="margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+              <h3 style="font-size: 18px; font-weight: 600;">December 28, 2024</h3>
+              <span class="badge badge-success">Low Severity</span>
+            </div>
+            <p style="font-size: 13px; color: #737373;">Duration: 9:32 AM</p>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Symptoms Reported</h3>
+            <p style="font-size: 14px; color: #0a0a0a; line-height: 1.7; margin-bottom: 16px;">
+              "I have a runny nose and mild sore throat since yesterday morning. No fever but feeling slightly tired."
+            </p>
+            <div style="font-size: 13px; color: #737373;">
+              <strong>Extracted Symptoms:</strong>
+              <ul style="margin-top: 8px; padding-left: 20px;">
+                <li>Rhinorrhea (runny nose) - 24 hours</li>
+                <li>Pharyngitis (sore throat) - mild</li>
+                <li>Fatigue - mild</li>
+                <li>No pyrexia (fever)</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">AI Assessment</h3>
+            <div style="font-size: 14px; color: #0a0a0a; line-height: 1.7;">
+              <p style="margin-bottom: 12px;"><strong>Likely Condition:</strong> Common cold (viral rhinitis)</p>
+              <p style="margin-bottom: 12px;"><strong>Severity Score:</strong> 2/10 (Low)</p>
+              <p><strong>Confidence:</strong> 87%</p>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Recommended Actions Taken</h3>
+            <div class="feature-list">
+              <li><span class="checkmark">✓</span> Rest at home</li>
+              <li><span class="checkmark">✓</span> Stay hydrated</li>
+              <li><span class="checkmark">✓</span> OTC decongestants if needed</li>
+              <li><span class="checkmark">✓</span> Monitor for 3-5 days</li>
+            </div>
+          </div>
+          
+          <div class="card" style="background: #dbeafe; border-color: #93c5fd;">
+            <h3 class="card-title" style="color: #1e40af;">💊 Medications Noted</h3>
+            <p style="font-size: 13px; color: #1e40af;">
+              • Vitamin C supplement (1000mg daily)<br>
+              • Saline nasal spray<br>
+              • Honey with warm water
+            </p>
+          </div>
+          
+          <button class="btn btn-outline" style="width: 100%;">View Full Report PDF</button>
+        </div>
+      </div>
+      
+      <!-- Health Reports -->
+      <div class="screen">
+        <div class="screen-header">
+          <span>05 - Health Reports</span>
+          <span>📋</span>
+        </div>
+        <div class="screen-content">
+          <div class="tabs">
+            <button class="tab active">Monthly</button>
+            <button class="tab">Quarterly</button>
+            <button class="tab">Yearly</button>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">December 2024 Summary</h3>
+            <div class="stat-grid" style="margin-bottom: 0;">
+              <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Checks</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">2.3</div>
+                <div class="stat-label">Avg Severity</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Resolved</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Common Symptoms This Month</h3>
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px;">Headache</span>
+                <span style="font-size: 13px; font-weight: 600;">67%</span>
+              </div>
+              <div style="height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; width: 67%; background: #667eea;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px;">Fatigue</span>
+                <span style="font-size: 13px; font-weight: 600;">50%</span>
+              </div>
+              <div style="height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; width: 50%; background: #667eea;"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px;">Fever</span>
+                <span style="font-size: 13px; font-weight: 600;">33%</span>
+              </div>
+              <div style="height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; width: 33%; background: #667eea;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Health Insights</h3>
+            <div style="font-size: 14px; color: #0a0a0a; line-height: 1.7;">
+              <p style="margin-bottom: 12px;">✓ Your symptom patterns suggest seasonal vulnerability to respiratory issues.</p>
+              <p style="margin-bottom: 12px;">✓ Most symptoms resolved within 3-5 days with basic self-care.</p>
+              <p>✓ Consider preventive measures during weather changes.</p>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary" style="width: 100%;">Download Full Report</button>
+        </div>
+      </div>
+      
+      <!-- Settings / Profile -->
+      <div class="screen">
+        <div class="screen-header">
+          <span>06 - Settings & Profile</span>
+          <span>⚙️</span>
+        </div>
+        <div class="screen-content">
+          <div class="card">
+            <h3 class="card-title">Personal Information</h3>
+            <div class="input-group">
+              <label class="label">Full Name</label>
+              <input type="text" class="input" value="Sarah Johnson" />
+            </div>
+            <div class="input-group">
+              <label class="label">Date of Birth</label>
+              <input type="date" class="input" value="1990-05-15" />
+            </div>
+            <div class="input-group">
+              <label class="label">Email</label>
+              <input type="email" class="input" value="sarah.j@email.com" />
+            </div>
+            <button class="btn btn-primary">Update Profile</button>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Health Preferences</h3>
+            <div class="input-group">
+              <label class="label">Chronic Conditions</label>
+              <input type="text" class="input" placeholder="e.g., Asthma, Diabetes..." />
+            </div>
+            <div class="input-group">
+              <label class="label">Allergies</label>
+              <input type="text" class="input" placeholder="e.g., Peanuts, Penicillin..." />
+            </div>
+            <div class="input-group">
+              <label class="label">Current Medications</label>
+              <textarea class="textarea" style="min-height: 80px;" placeholder="List current medications..."></textarea>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 class="card-title">Notifications</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+              <div>
+                <div style="font-weight: 500; font-size: 14px;">Email Reminders</div>
+                <div style="font-size: 12px; color: #737373;">Get health check reminders</div>
+              </div>
+              <input type="checkbox" checked style="width: 20px; height: 20px;" />
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e5e5;">
+              <div>
+                <div style="font-weight: 500; font-size: 14px;">Weekly Reports</div>
+                <div style="font-size: 12px; color: #737373;">Receive weekly health summaries</div>
+              </div>
+              <input type="checkbox" checked style="width: 20px; height: 20px;" />
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+              <div>
+                <div style="font-weight: 500; font-size: 14px;">SMS Alerts</div>
+                <div style="font-size: 12px; color: #737373;">Urgent health notifications</div>
+              </div>
+              <input type="checkbox" style="width: 20px; height: 20px;" />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- COMPONENT LIBRARY -->
+  <div class="section">
+    <h2 class="section-title">Component Library (shadcn/ui)</h2>
+    
+    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Buttons</h3>
+    <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+      <button class="btn btn-primary">Primary Button</button>
+      <button class="btn btn-outline">Outline Button</button>
+      <button class="btn btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">Disabled</button>
+    </div>
+    
+    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Badges</h3>
+    <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+      <span class="badge badge-success">Success</span>
+      <span class="badge badge-warning">Warning</span>
+      <span class="badge badge-danger">Danger</span>
+      <span class="badge badge-info">Info</span>
+    </div>
+    
+    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Severity Indicators</h3>
+    <div style="max-width: 600px;">
+      <div class="severity-indicator severity-low">
+        <div style="font-size: 32px;">✓</div>
+        <div>
+          <div style="font-weight: 600; font-size: 16px;">Low Severity</div>
+          <div style="font-size: 13px; color: #166534;">Self-care at home recommended</div>
+        </div>
+      </div>
+      
+      <div class="severity-indicator severity-moderate">
+        <div style="font-size: 32px;">⚠️</div>
+        <div>
+          <div style="font-weight: 600; font-size: 16px;">Moderate Severity</div>
+          <div style="font-size: 13px; color: #92400e;">Visit clinic within 24 hours</div>
+        </div>
+      </div>
+      
+      <div class="severity-indicator severity-high">
+        <div style="font-size: 32px;">🚨</div>
+        <div>
+          <div style="font-weight: 600; font-size: 16px;">High Severity</div>
+          <div style="font-size: 13px; color: #991b1b;">Seek emergency care immediately</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURE COMPARISON -->
+  <div class="section">
+    <h2 class="section-title">Feature Comparison: Guest vs Authenticated Users</h2>
+    
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Guest User</th>
+          <th>Authenticated User</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Symptom Checks</strong></td>
+          <td>3 per day</td>
+          <td>Unlimited</td>
+        </tr>
+        <tr>
+          <td><strong>History Tracking</strong></td>
+          <td>❌ Not available</td>
+          <td>✅ Full history with charts</td>
+        </tr>
+        <tr>
+          <td><strong>Health Reports</strong></td>
+          <td>❌ Not available</td>
+          <td>✅ Weekly, Monthly, Yearly</td>
+        </tr>
+        <tr>
+          <td><strong>PDF Downloads</strong></td>
+          <td>Single check only</td>
+          <td>✅ All reports</td>
+        </tr>
+        <tr>
+          <td><strong>Medication Tracking</strong></td>
+          <td>❌ Not available</td>
+          <td>✅ Full medication log</td>
+        </tr>
+        <tr>
+          <td><strong>Personalized Insights</strong></td>
+          <td>❌ Not available</td>
+          <td>✅ AI-powered patterns</td>
+        </tr>
+        <tr>
+          <td><strong>Email Notifications</strong></td>
+          <td>❌ Not available</td>
+          <td>✅ Custom preferences</td>
+        </tr>
+        <tr>
+          <td><strong>Data Export</strong></td>
+          <td>❌ Not available</td>
+          <td>✅ CSV, PDF formats</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DATA STRUCTURE -->
+  <div class="section">
+    <h2 class="section-title">Data Structure & Storage</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+      <div class="card">
+        <h3 class="card-title">User Profile</h3>
+        <pre style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
+{
+  "userId": "uuid",
+  "name": "string",
+  "email": "string",
+  "dateOfBirth": "date",
+  "chronicConditions": ["string"],
+  "allergies": ["string"],
+  "currentMedications": ["string"],
+  "createdAt": "timestamp",
+  "lastLogin": "timestamp"
+}</pre>
+      </div>
+      
+      <div class="card">
+        <h3 class="card-title">Symptom Check Record</h3>
+        <pre style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
+{
+  "checkId": "uuid",
+  "userId": "uuid",
+  "timestamp": "timestamp",
+  "symptomInput": "string",
+  "extractedSymptoms": [{
+    "name": "string",
+    "duration": "string",
+    "severity": "low|moderate|high"
+  }],
+  "severityScore": "number",
+  "recommendations": ["string"],
+  "suggestedMedications": ["string"],
+  "nextSteps": "string",
+  "confidence": "number"
+}</pre>
+      </div>
+      
+      <div class="card">
+        <h3 class="card-title">Analytics Aggregation</h3>
+        <pre style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
+{
+  "userId": "uuid",
+  "period": "daily|weekly|monthly|yearly",
+  "totalChecks": "number",
+  "avgSeverity": "number",
+  "commonSymptoms": [{
+    "symptom": "string",
+    "frequency": "number"
+  }],
+  "trends": [{
+    "date": "date",
+    "count": "number",
+    "severity": "number"
+  }]
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESPONSIVE BEHAVIOR -->
+  <div class="section">
+    <h2 class="section-title">Responsive Design Guidelines</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+      <div class="card">
+        <h3 class="card-title">Mobile (< 640px)</h3>
+        <ul style="font-size: 13px; color: #737373; padding-left: 20px;">
+          <li>Single column layout</li>
+          <li>Full-width cards</li>
+          <li>Stacked stat cards</li>
+          <li>Bottom navigation</li>
+          <li>Collapsible sections</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3 class="card-title">Tablet (640px - 1024px)</h3>
+        <ul style="font-size: 13px; color: #737373; padding-left: 20px;">
+          <li>2-column grid</li>
+          <li>Side navigation drawer</li>
+          <li>Expanded chart views</li>
+          <li>Side-by-side comparisons</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3 class="card-title">Desktop (> 1024px)</h3>
+        <ul style="font-size: 13px; color: #737373; padding-left: 20px;">
+          <li>3-column layouts</li>
+          <li>Fixed sidebar navigation</li>
+          <li>Multi-panel dashboards</li>
+          <li>Hover interactions</li>
+          <li>Keyboard shortcuts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
