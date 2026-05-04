@@ -10,7 +10,7 @@ import { extractJSON } from "./extract-json";
 import { logger } from "@/lib/utils/logger";
 
 const MAX_TOKENS = 700;
-const TIMEOUT_MS = 45_000;
+const TIMEOUT_MS = 25_000; // must be < Vercel maxDuration (30s) so we return JSON on timeout
 const MAX_RETRIES = 1;
 
 // ─── Provider config ────────────────────────────────────────────────────────
@@ -360,6 +360,18 @@ export async function analyzeSymptoms(
         msg: (err as Error).message,
       });
 
+      if (
+        (err as DOMException)?.name === "TimeoutError" ||
+        (err as NodeJS.ErrnoException).code === "ETIMEDOUT"
+      ) {
+        return {
+          ok: false,
+          error: {
+            code: "AI_TIMEOUT",
+            message: "The AI took too long to respond. Please try again.",
+          },
+        };
+      }
       if (code === "RATE_LIMITED" || (err instanceof Anthropic.APIError && err.status === 429)) {
         return {
           ok: false,
