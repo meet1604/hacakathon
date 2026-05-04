@@ -29,6 +29,52 @@ const GEMINI_BASE = process.env.GEMINI_BASE ?? "https://generativelanguage.googl
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 const GROQ_BASE = process.env.GROQ_BASE ?? "https://api.groq.com/openai/v1/chat/completions";
 
+// ─── Gemini structured-output schema ────────────────────────────────────────
+const GEMINI_RESPONSE_SCHEMA = {
+  type: "object",
+  properties: {
+    action: { type: "string", enum: ["ask_followup", "triage"] },
+    severity: { type: "string", enum: ["emergency", "clinic_today", "clinic_soon", "self_care"] },
+    followup_questions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          q: { type: "string" },
+          options: { type: "array", items: { type: "string" } },
+        },
+        required: ["q"],
+      },
+    },
+    red_flags: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          category: { type: "string" },
+          description: { type: "string" },
+        },
+        required: ["category", "description"],
+      },
+    },
+    reasoning: { type: "string" },
+    doctor_summary: { type: "string" },
+    suggested_otc: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          purpose: { type: "string" },
+          caution: { type: "string" },
+        },
+        required: ["name", "purpose", "caution"],
+      },
+    },
+  },
+  required: ["action", "reasoning", "red_flags"],
+};
+
 // ─── Anthropic singleton ─────────────────────────────────────────────────────
 let _anthropic: Anthropic | null = null;
 
@@ -137,6 +183,8 @@ async function callGemini(
           maxOutputTokens: MAX_TOKENS,
           temperature: 0.1,
           thinkingConfig: { thinkingBudget: 0 },
+          responseMimeType: "application/json",
+          responseSchema: GEMINI_RESPONSE_SCHEMA,
         },
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
