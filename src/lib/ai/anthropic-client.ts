@@ -9,22 +9,20 @@ import { TRIAGE_SYSTEM_PROMPT } from "./prompts/triage-system";
 import { extractJSON } from "./extract-json";
 import { logger } from "@/lib/utils/logger";
 
-const MAX_TOKENS = 1024;
+const MAX_TOKENS = 600;
 const TIMEOUT_MS = 45_000;
 const MAX_RETRIES = 1;
 
 // ─── Provider config ────────────────────────────────────────────────────────
-// Set AI_PROVIDER=openrouter in .env.local for free dev usage (Qwen).
-// Set AI_PROVIDER=anthropic  in production for Claude.
-// Set AI_PROVIDER=nvidia     for NVIDIA NIM API.
-const AI_PROVIDER = process.env.AI_PROVIDER ?? "gemini";
+// AI_PROVIDER options: groq (default, fastest) | gemini | anthropic | openrouter | nvidia
+const AI_PROVIDER = process.env.AI_PROVIDER ?? "groq";
 
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL ?? "qwen/qwen3-6b-instruct:free";
 const OPENROUTER_BASE = process.env.OPENROUTER_BASE ?? "https://openrouter.ai/api/v1/chat/completions";
 const NVIDIA_MODEL = process.env.NVIDIA_MODEL ?? "meta/llama-3.1-405b-instruct";
 const NVIDIA_BASE = process.env.NVIDIA_BASE ?? "https://integrate.api.nvidia.com/v1/chat/completions";
-const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
 const GEMINI_BASE = process.env.GEMINI_BASE ?? "https://generativelanguage.googleapis.com/v1beta";
 const GROQ_MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 const GROQ_BASE = process.env.GROQ_BASE ?? "https://api.groq.com/openai/v1/chat/completions";
