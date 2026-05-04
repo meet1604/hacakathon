@@ -16,7 +16,7 @@ export type Message = z.infer<typeof MessageSchema>;
 
 export const FollowupQuestionSchema = z.object({
   q: z.string().min(1),
-  options: z.array(z.string()).max(6).optional(),
+  options: z.array(z.string()).max(6).nullish().transform(v => v ?? undefined),
 });
 export type FollowupQuestion = z.infer<typeof FollowupQuestionSchema>;
 
@@ -37,16 +37,16 @@ export const TriageResponseSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("ask_followup"),
     followup_questions: z.array(FollowupQuestionSchema).min(1).max(3),
-    red_flags: z.array(RedFlagSchema).default([]),
+    red_flags: z.array(RedFlagSchema).nullish().transform(v => v ?? []),
     reasoning: z.string(),
   }),
   z.object({
     action: z.literal("triage"),
     severity: SeverityEnum,
-    red_flags: z.array(RedFlagSchema).default([]),
+    red_flags: z.array(RedFlagSchema).nullish().transform(v => v ?? []),
     reasoning: z.string(),
     doctor_summary: z.string(),
-    suggested_otc: z.array(OTCSuggestionSchema).max(3).optional(),
+    suggested_otc: z.array(OTCSuggestionSchema).max(3).nullish().transform(v => v ?? undefined),
   }),
 ]);
 export type TriageResponse = z.infer<typeof TriageResponseSchema>;

@@ -28,9 +28,10 @@ Only flag emergency for CURRENT acute symptoms, not past history.
 - clinic_soon: See doctor within 1 week
 - self_care: Manage at home with rest/fluids/OTC
 
-## OUTPUT SCHEMAS (use exact field names)
+## OUTPUT SCHEMAS (use exact field names, omit optional fields entirely if not needed)
 Follow-up: {"action":"ask_followup","followup_questions":[{"q":"...","options":["..."]}],"red_flags":[],"reasoning":"..."}
-Triage: {"action":"triage","severity":"...","red_flags":[],"reasoning":"...","doctor_summary":"...","suggested_otc":[{"name":"...","purpose":"...","caution":"..."}]}
+Triage (non-self_care): {"action":"triage","severity":"emergency","red_flags":[],"reasoning":"...","doctor_summary":"..."}
+Triage (self_care only): {"action":"triage","severity":"self_care","red_flags":[],"reasoning":"...","doctor_summary":"...","suggested_otc":[{"name":"...","purpose":"...","caution":"..."}]}
 
 ## EXAMPLES
 Input: "chest pain and sweating"
